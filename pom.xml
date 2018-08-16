@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>net.backlogic.persistence.client</groupId>
+  <groupId>net.backlogic</groupId>
   <artifactId>persistence-client</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>persistence-client</name>
@@ -16,5 +16,21 @@
 		  <artifactId>httpclient</artifactId>
 		  <version>4.5.3</version>
 		</dependency>
+		
+		<!-- Class Path Scanner for Service Scanning -->
+		<!-- https://mvnrepository.com/artifact/io.github.lukehutch/fast-classpath-scanner -->
+		<dependency>
+		    <groupId>io.github.lukehutch</groupId>
+		    <artifactId>fast-classpath-scanner</artifactId>
+		    <version>2.4.3</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+	
   </dependencies>
 </project>

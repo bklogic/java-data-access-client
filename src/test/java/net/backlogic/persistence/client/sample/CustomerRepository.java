@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.backlogic.persistent.client;
+package net.backlogic.persistence.client.sample;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import net.backlogic.persistence.client.annotation.Repository;
  * @author Ken
  *
  */
-@Repository("mod/Customer")
+@Repository("/mod/Customer")
 public interface CustomerRepository extends PersistenceInterface{
 	@Read
 	public Customer get(int customerId);

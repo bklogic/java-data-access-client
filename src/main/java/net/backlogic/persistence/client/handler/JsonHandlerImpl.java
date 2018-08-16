@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.backlogic.persistence.client;
+package net.backlogic.persistence.client.handler;
 
 import java.io.IOException;
 
@@ -41,15 +41,31 @@ public class JsonHandlerImpl implements JsonHandler {
 	   * To convert a JSON string into object
 	   */
 	  public Object toObject(String jsonString, Class<?> objType) {
+		  //mapper
+		  ObjectMapper mapper = new ObjectMapper();
+		  
 		  //handle void
-		  if (objType.getName() == "void") {
+		  if ( objType.getName() == "void") {
 			  return null;
 		  }
 		  
+//TODO:  test and enhance for data types, dates, bytes[], AND structure types: lIST, ETC	  
+		  
+//		  else if (objType == java.util.List.class){
+//			  objType = mapper.getTypeFactory().constructCollectionType(java.util.List.class, Foo.class)
+//		  }
+		  
+		  
+//		  List<Car> listCar = objectMapper.readValue(jsonCarArray, new TypeReference<List<Car>>(){});		  
+		  
+		  
 		  //process
-		  ObjectMapper mapper = new ObjectMapper();	
 		  Object object = null;
 			try {
+				if (objType == java.util.List.class) {
+					
+				}
+				
 				object = mapper.readValue(jsonString, objType);
 			} catch (JsonGenerationException e) {
 				e.printStackTrace();

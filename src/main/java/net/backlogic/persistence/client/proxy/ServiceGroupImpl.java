@@ -1,9 +1,12 @@
 /**
  * 
  */
-package net.backlogic.persistence.client;
+package net.backlogic.persistence.client.proxy;
 
 import java.util.HashMap;
+
+import net.backlogic.persistence.client.handler.JsonHandler;
+import net.backlogic.persistence.client.handler.ServiceHandler;
 
 /**
  * @author Ken

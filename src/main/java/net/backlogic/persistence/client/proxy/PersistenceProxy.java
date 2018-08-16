@@ -1,45 +1,71 @@
 /**
  * 
  */
-package net.backlogic.persistence.client;
+package net.backlogic.persistence.client.proxy;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.function.Function;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import net.backlogic.persistence.client.handler.JsonHandler;
+import net.backlogic.persistence.client.handler.ServiceHandler;
 
 /**
  * @author Ken
  *
+ * Proxy Strategy:
+ *   One proxy per persistence interface. Thus proxy is shared across threads, and should contained private property.
+ * Group Service
+ *   GroupId needs also be passed in at invocation, possible as a formal parameter of the persistence methods.
+ *   Will decide later.  At the moment, no support for group service.
  */
 public abstract class PersistenceProxy implements InvocationHandler {
-	  //service url
-	  String serviceUrl;	  
-	  //groupId
-	  String groupId;
 	  //http hanlder
 	  ServiceHandler serviceHandler;
 	  //json hanlder
 	  JsonHandler jsonHandler;
 	  
-	  
-	  public PersistenceProxy (String serviceUrl, ServiceHandler serviceHandler, JsonHandler jsonHandler){ 
-		  this.serviceUrl = serviceUrl; 
+	  /*
+	   * Constructor
+	   */
+	  public PersistenceProxy (ServiceHandler serviceHandler, JsonHandler jsonHandler){ 
 		  this.serviceHandler = serviceHandler;
 		  this.jsonHandler = jsonHandler;
 	  }
 
-	  public abstract Object invoke(Object proxy, Method m, Object[] args) throws Throwable;	  
+	  @Override
+	  public Object invoke (Object proxy, Method m, Object[] args) throws Throwable {
+	      try {
+	    	  	//input and groupId
+		        Object input = getInput(m, args);
+		        String groupId = null; //place holder for groupId
+		        
+		        //input json
+		        String inputJson = jsonHandler.toJson(input);
+		        
+		        //service url
+		        String serviceUrl = getServiceUrl(m);
+		        
+		        //invoke service
+		        String outputJson = serviceHandler.invoke(serviceUrl, inputJson, groupId);
+		        
+		        //output  TODO: validate supported return types  getGenericReturnType(), getReturnType()
+		        Object output = jsonHandler.toObject(outputJson, m.getReturnType());
+		        
+		        //return
+			    return output;
+				 
+		      } catch (Exception e) {
+			         throw e;
+		      }	      		  
+	  }
+	  	  	  
 	  
-	  	  
+	  abstract protected String getServiceUrl(Method m);
+	  
+	  
 	  protected Object getInput(Method method, Object[] args) {
 		  //get method parameters
 		  Parameter param;

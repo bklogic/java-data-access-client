@@ -4,9 +4,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Annotate a Delete method of a Repository interface.
+ * 
+ * Method annotation for Query and Command interface. A mechanism to code service url. 
+ * 
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Delete {
-
+public @interface Url {
+	String value();
 }

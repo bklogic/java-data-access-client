@@ -4,8 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * @author Ken
- * Created on 10/20/2017
+ * Annotate a Read method of a Repository interface.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Read {

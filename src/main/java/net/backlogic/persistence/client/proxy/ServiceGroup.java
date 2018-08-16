@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.backlogic.persistence.client;
+package net.backlogic.persistence.client.proxy;
 
 /**
  * @author Ken

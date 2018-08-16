@@ -1,17 +1,18 @@
-package net.backlogic.persistent.client;
+package net.backlogic.persistence.client.sample;
 
 import java.util.List;
 
 import net.backlogic.persistence.client.PersistenceInterface;
 import net.backlogic.persistence.client.annotation.Query;
-import net.backlogic.persistence.client.annotation.Service;
+import net.backlogic.persistence.client.annotation.Url;
 
-@Query
+@Query("/mod")
 public interface CustomerQuery extends PersistenceInterface {
-	@Service("mod/getCustomersByName")
+	@Url("/getCustomersByName")
 	public List<Customer> getCustomersByName(String name);
 	
-	@Service("mod/getCustomers")
+	@Url("/getCustomers")
 	public List<Customer> getCustomers();
+	
 }
 

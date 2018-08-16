@@ -4,10 +4,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * @author Ken
- * Created on 10/20/2017
+ * Annotate a Command interface or a Command method of a DAO interface. Value is a partial service url.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Command {
-
+	String value();
 }

@@ -12,23 +12,23 @@ public class PersistenceException extends RuntimeException  {
 	/**
 	 * exception type: service. For any invalid service condition
 	 */
-	static final String ServiceException = "ServiceException";
+	public static final String ServiceException = "ServiceException";
 	/**
 	 * exception type: system. for any unexpected exception
 	 */
-	static final String SystemException = "SystemException";
+	public static final String SystemException = "SystemException";
 	/**
 	 * exception type: system. for any unexpected exception
 	 */
-	static final String InputException = "InputException";
+	public static final String InputException = "InputException";
 	/**
 	 * exception type: interface. for issue with persistence interface
 	 */
-	static final String InterfaceException = "InterfaceException";
+	public static final String InterfaceException = "InterfaceException";
 	/**
 	 * exception type: http. for issue with http call
 	 */
-	static final String HttpException = "HttpException";
+	public static final String HttpException = "HttpException";
 
 	
 	/**

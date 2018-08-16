@@ -7,10 +7,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * @author Ken
- * Created on 10/20/2017
+ * Annotate a Repository interface. Url should points to a CRUD service. Type indicates type of the aggregate root object.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Repository {
-	String value();
+	String value() default "";
+	String url() default "";
+	String type() default "";
 }

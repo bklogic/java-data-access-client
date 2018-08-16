@@ -1,19 +1,20 @@
 /**
  * 
  */
-package net.backlogic.persistent.client;
+package net.backlogic.persistence.client.sample;
 
 import net.backlogic.persistence.client.PersistenceInterface;
 import net.backlogic.persistence.client.annotation.Command;
-import net.backlogic.persistence.client.annotation.Service;
+import net.backlogic.persistence.client.annotation.Dao;
+import net.backlogic.persistence.client.annotation.Url;
 
 /**
  * @author Ken
  *
  */
-@Command
+@Command("/mod")
 public interface CustomerCommand extends PersistenceInterface {
 	
-	@Service("mod/RemoveAllCustomers")
+	@Url("/RemoveAllCustomers")
 	public void removeAllCustomers();
 }

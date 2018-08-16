@@ -1,7 +1,7 @@
 /**
  * 
  */
-package net.backlogic.persistent.client;
+package net.backlogic.persistence.client.sample;
 
 /**
  * @author Ken
