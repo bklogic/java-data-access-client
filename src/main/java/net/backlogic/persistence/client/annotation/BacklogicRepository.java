@@ -10,7 +10,7 @@ import java.lang.annotation.RetentionPolicy;
  * Annotate a Repository interface. Url should points to a CRUD service. Type indicates type of the aggregate root object.
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Repository {
+public @interface BacklogicRepository {
 	String value() default "";
 	String url() default "";
 	String type() default "";

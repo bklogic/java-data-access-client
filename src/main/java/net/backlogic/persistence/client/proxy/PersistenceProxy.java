@@ -6,8 +6,13 @@ package net.backlogic.persistence.client.proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 
 import net.backlogic.persistence.client.handler.JsonHandler;
 import net.backlogic.persistence.client.handler.ServiceHandler;
@@ -22,9 +27,9 @@ import net.backlogic.persistence.client.handler.ServiceHandler;
  *   Will decide later.  At the moment, no support for group service.
  */
 public abstract class PersistenceProxy implements InvocationHandler {
-	  //http hanlder
+	  //http handler
 	  ServiceHandler serviceHandler;
-	  //json hanlder
+	  //json handler
 	  JsonHandler jsonHandler;
 	  
 	  /*
@@ -40,7 +45,6 @@ public abstract class PersistenceProxy implements InvocationHandler {
 	      try {
 	    	  	//input and groupId
 		        Object input = getInput(m, args);
-		        String groupId = null; //place holder for groupId
 		        
 		        //input json
 		        String inputJson = jsonHandler.toJson(input);
@@ -49,10 +53,27 @@ public abstract class PersistenceProxy implements InvocationHandler {
 		        String serviceUrl = getServiceUrl(m);
 		        
 		        //invoke service
-		        String outputJson = serviceHandler.invoke(serviceUrl, inputJson, groupId);
+		        String outputJson = serviceHandler.invoke(serviceUrl, inputJson);
 		        
 		        //output  TODO: validate supported return types  getGenericReturnType(), getReturnType()
-		        Object output = jsonHandler.toObject(outputJson, m.getReturnType());
+		        Object output; 
+		        Type elementType;
+		        Class<?> returnType = m.getReturnType();
+		        Type genericReturnType = m.getGenericReturnType();
+		        if (returnType.getName() == "void") {
+		        	output = null;
+		        }
+		        else if (returnType == List.class && genericReturnType instanceof ParameterizedType) {
+	        		elementType = ((ParameterizedType) genericReturnType).getActualTypeArguments()[0];
+	        		output = jsonHandler.toList(outputJson, (Class<?>) elementType);
+		        }
+		        else if (returnType == Set.class && genericReturnType instanceof ParameterizedType) {
+	        		elementType = ((ParameterizedType) genericReturnType).getActualTypeArguments()[0];
+	        		output = jsonHandler.toSet(outputJson, (Class<?>) elementType);
+		        }
+		        else {
+			        output = jsonHandler.toObject(outputJson, m.getReturnType());		        	
+		        }
 		        
 		        //return
 			    return output;

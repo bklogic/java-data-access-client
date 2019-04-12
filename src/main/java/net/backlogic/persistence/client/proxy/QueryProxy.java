@@ -6,8 +6,8 @@ package net.backlogic.persistence.client.proxy;
 import java.lang.reflect.Method;
 
 import net.backlogic.persistence.client.PersistenceException;
-import net.backlogic.persistence.client.annotation.Query;
-import net.backlogic.persistence.client.annotation.Url;
+import net.backlogic.persistence.client.annotation.BacklogicQuery;
+import net.backlogic.persistence.client.annotation.Name;
 import net.backlogic.persistence.client.handler.JsonHandler;
 import net.backlogic.persistence.client.handler.ServiceHandler;
 
@@ -31,11 +31,11 @@ public class QueryProxy extends PersistenceProxy {
 		  String interfaceUrl, methodUrl;
 		  
 		  //interface url
-		  Query interfaceAnnotation = method.getDeclaringClass().getAnnotation(Query.class);
+		  BacklogicQuery interfaceAnnotation = method.getDeclaringClass().getAnnotation(BacklogicQuery.class);
 		  interfaceUrl = interfaceAnnotation.value();
 		  
 		  //method url
-		  Url urlAnnotation = method.getAnnotation(Url.class);
+		  Name urlAnnotation = method.getAnnotation(Name.class);
 		  if ( urlAnnotation == null ) {
 			  throw new PersistenceException(PersistenceException.InterfaceException, "InvalidInterface", "Url annotation is missing");
 		  }

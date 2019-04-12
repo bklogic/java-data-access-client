@@ -1,19 +1,23 @@
-package net.backlogic.persistence.client;
+package net.backlogic.persistence.client.handler;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import net.backlogic.persistence.client.handler.ServiceHandler;
+import net.backlogic.persistence.client.PersistenceException;
 
 public class MockServiceHandler implements ServiceHandler {
-	private Map<String, String> outputMap;
+	private String baseUrl;
+	private Map<String, String> outputMap = new HashMap<String, String>();
 	private String serviceUrl;
 	private String serviceInput;
-	private String groupId;
 	
 	
-	public void setOutputMap(Map<String, String> outputMap){
-		this.outputMap = outputMap;
+	public MockServiceHandler(String baseUrl) {
+		this.baseUrl = baseUrl;
+	}
+	
+	public void setOutput(String serviceUrl, String output){
+		outputMap.put(serviceUrl, output);
 	}
 
 	public String getServiceUrl() {
@@ -26,25 +30,18 @@ public class MockServiceHandler implements ServiceHandler {
 	}
 
 
-	public String getGroupId() {
-		return groupId;
-	}
-
-
 	@Override
-	public String invoke(String serviceUrl, String serviceInput, String groupId) {
+	public String invoke(String serviceUrl, String serviceInput) {
 		//record inputs
 		this.serviceUrl = serviceUrl;
 		this.serviceInput = serviceInput;
-		this.groupId = groupId;
 		
 		//output
-		String output = outputMap.get(serviceUrl.toLowerCase());
+		String output = outputMap.get(serviceUrl);
 		if ( output == null ) {
 			throw new PersistenceException(PersistenceException.InputException, "ServiceUnAvaiable", "Serivce: \"" + serviceUrl + "\" is not avaibale.");
 		}
 		return output;
 	}
 
-	
 }

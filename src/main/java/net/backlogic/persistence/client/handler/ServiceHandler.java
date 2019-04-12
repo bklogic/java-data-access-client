@@ -12,6 +12,6 @@ package net.backlogic.persistence.client.handler;
 @FunctionalInterface
 public interface ServiceHandler {
 	
-	public String invoke(String serviceUrl, String serviceInput, String groupId);	
+	public String invoke(String serviceUrl, String serviceInput);	
 	
 }

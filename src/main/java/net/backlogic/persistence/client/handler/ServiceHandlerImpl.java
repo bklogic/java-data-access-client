@@ -38,7 +38,7 @@ public class ServiceHandlerImpl implements ServiceHandler {
 	/*
 	 * Invoke persistence service. Take a JSON input and return a JSON output.
 	 */
-	public String invoke(String serviceUrl, String serviceInput, String groupId) {
+	public String invoke(String serviceUrl, String serviceInput) {
 		  String output = "";	
 		  try {
 
@@ -52,7 +52,7 @@ public class ServiceHandlerImpl implements ServiceHandler {
 				os.write(serviceInput.getBytes());
 				os.flush();
 
-				if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
+				if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
 					throw new PersistenceException(PersistenceException.HttpException, "HttpError", "Failed : HTTP error code : "
 							+ conn.getResponseCode() );						  
 				}
@@ -63,17 +63,11 @@ public class ServiceHandlerImpl implements ServiceHandler {
 				while ((line = br.readLine()) != null) {
 					output += line;
 				}
-
 				conn.disconnect();
-
 			  } catch (MalformedURLException e) {
-
 				e.printStackTrace();
-
 			  } catch (IOException e) {
-
 				e.printStackTrace();
-
 			 }
 		
 		//return

@@ -6,8 +6,8 @@ package net.backlogic.persistence.client.proxy;
 import java.lang.reflect.Method;
 
 import net.backlogic.persistence.client.PersistenceException;
-import net.backlogic.persistence.client.annotation.Command;
-import net.backlogic.persistence.client.annotation.Url;
+import net.backlogic.persistence.client.annotation.BacklogicCommand;
+import net.backlogic.persistence.client.annotation.Name;
 import net.backlogic.persistence.client.handler.JsonHandler;
 import net.backlogic.persistence.client.handler.ServiceHandler;
 
@@ -30,11 +30,11 @@ public class CommandProxy extends PersistenceProxy{
 		  String interfaceUrl, methodUrl;
 		  
 		  //interface url
-		  Command interfaceAnnotation = method.getDeclaringClass().getAnnotation(Command.class);
+		  BacklogicCommand interfaceAnnotation = method.getDeclaringClass().getAnnotation(BacklogicCommand.class);
 		  interfaceUrl = interfaceAnnotation.value();
 		  
 		  //method url
-		  Url urlAnnotation = method.getAnnotation(Url.class);
+		  Name urlAnnotation = method.getAnnotation(Name.class);
 		  if ( urlAnnotation == null ) {
 			  throw new PersistenceException(PersistenceException.InterfaceException, "InvalidInterface", "Url annotation is missing");
 		  }

@@ -22,6 +22,10 @@ public class PersistenceException extends RuntimeException  {
 	 */
 	public static final String InputException = "InputException";
 	/**
+	 * exception type: system. for any unexpected exception
+	 */
+	public static final String JsonException = "JsonException";
+	/**
 	 * exception type: interface. for issue with persistence interface
 	 */
 	public static final String InterfaceException = "InterfaceException";
@@ -39,10 +43,6 @@ public class PersistenceException extends RuntimeException  {
 	 * exception name
 	 */
 	String name;
-	/**
-	 * exception detail
-	 */
-	String detail;
 	
 	
 	/**
@@ -59,28 +59,12 @@ public class PersistenceException extends RuntimeException  {
 
 	
 	/**
-	 * 
 	 * @param type	exception type
 	 * @param name	exception name
-	 * @param message	exception message
-	 * @param detail	exception detail
-	 */
-	public PersistenceException(String type, String name, String message, String detail) {
-		super(message);
-		this.type = type;
-		this.name = name;
-		this.detail = detail;
-	}
-
-	
-	/**
-	 * @param type	exception type
-	 * @param name	exception name
-	 * @param message	exception message
 	 * @param cause	exception cause
 	 */
-	public PersistenceException(String type, String name, String message, Throwable cause) {
-		super(message, cause);
+	public PersistenceException(String type, String name, Throwable cause) {
+		super(cause);
 		this.type = type;
 		this.name = name;
 	}

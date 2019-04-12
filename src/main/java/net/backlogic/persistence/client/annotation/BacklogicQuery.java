@@ -1,15 +1,12 @@
-/**
- * 
- */
 package net.backlogic.persistence.client.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Annotate a group interface.
+ * Annotate a Query interface or a Query method of a DAO interface. Value is a partial service url.
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Group {
-
+public @interface BacklogicQuery {
+	String value() default "";
 }

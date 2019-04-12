@@ -9,7 +9,7 @@ import net.backlogic.persistence.client.PersistenceException;
 import net.backlogic.persistence.client.annotation.Create;
 import net.backlogic.persistence.client.annotation.Delete;
 import net.backlogic.persistence.client.annotation.Read;
-import net.backlogic.persistence.client.annotation.Repository;
+import net.backlogic.persistence.client.annotation.BacklogicRepository;
 import net.backlogic.persistence.client.annotation.Save;
 import net.backlogic.persistence.client.annotation.Update;
 import net.backlogic.persistence.client.handler.JsonHandler;
@@ -33,7 +33,7 @@ public class RepositoryProxy extends PersistenceProxy {
 		  String interfaceUrl, methodUrl;
 		  
 		  //interface url
-		  Repository interfaceAnnotation = method.getDeclaringClass().getAnnotation(Repository.class);
+		  BacklogicRepository interfaceAnnotation = method.getDeclaringClass().getAnnotation(BacklogicRepository.class);
 		  interfaceUrl = interfaceAnnotation.value();
 		  if (interfaceUrl == null || interfaceUrl == "") {
 			  interfaceUrl = interfaceAnnotation.url();
