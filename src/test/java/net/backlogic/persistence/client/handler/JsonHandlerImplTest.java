@@ -1,9 +1,5 @@
 package net.backlogic.persistence.client.handler;
 
-import static org.junit.Assert.*;
-
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.TypeVariable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
