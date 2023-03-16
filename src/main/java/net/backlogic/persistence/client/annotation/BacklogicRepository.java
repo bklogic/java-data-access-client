@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.backlogic.persistence.client.annotation;
 
@@ -11,7 +11,9 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BacklogicRepository {
-	String value() default "";
-	String url() default "";
-	String type() default "";
+    String value() default "";
+
+    String url() default "";
+
+    String type() default "";
 }

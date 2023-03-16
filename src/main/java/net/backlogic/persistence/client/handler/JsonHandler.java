@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package net.backlogic.persistence.client.handler;
 
@@ -9,17 +9,17 @@ import java.util.Set;
 /**
  * @author Ken
  * Created on 10/24/2015
- * 
+ * <p>
  * Interface to provide methods to convert object to json and json to object.
  * Interfaced used with intention to plug in user implemented JsonHandler.
  */
 public interface JsonHandler {
 
-	public String toJson(Object object);
-	
-	public Object toObject(String jsonString, Class<?> objType);
+    String toJson(Object object);
 
-	public List<?> toList(String jsonString, Class<?> elementType);
+    Object toObject(String jsonString, Class<?> objType);
 
-	public Set<?> toSet(String jsonString, Class<?> elementType);
+    List<?> toList(String jsonString, Class<?> elementType);
+
+    Set<?> toSet(String jsonString, Class<?> elementType);
 }

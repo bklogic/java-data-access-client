@@ -1,15 +1,15 @@
 package net.backlogic.persistence.client.handler;
 
+import net.backlogic.persistence.client.PersistenceException;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import net.backlogic.persistence.client.PersistenceException;
 
 public class MockServiceHandler implements ServiceHandler {
 	private String baseUrl;
 	private Map<String, String> outputMap = new HashMap<String, String>();
 	private String serviceUrl;
-	private String serviceInput;
+	private Object serviceInput;
 	
 	
 	public MockServiceHandler(String baseUrl) {
@@ -25,13 +25,13 @@ public class MockServiceHandler implements ServiceHandler {
 	}
 
 
-	public String getServiceInput() {
+	public Object getServiceInput() {
 		return serviceInput;
 	}
 
 
 	@Override
-	public String invoke(String serviceUrl, String serviceInput) {
+	public Object invoke(String serviceUrl, Object serviceInput, ReturnType returnType, Class<?> elementType) {
 		//record inputs
 		this.serviceUrl = serviceUrl;
 		this.serviceInput = serviceInput;

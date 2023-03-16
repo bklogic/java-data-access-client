@@ -1,79 +1,87 @@
-/**
- * 
- */
 package net.backlogic.persistence.client.handler;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import net.backlogic.persistence.client.PersistenceException;
+import java.text.SimpleDateFormat;
+import java.util.LinkedList;
+import java.util.List;
 
-/**
- * @author Ken
- * Created on 10/23/2017
- * 
- * Responsible for handling HTTP service request
- */
-public class ServiceHandlerImpl implements ServiceHandler {
-	/*
-	 * base url
-	 */
-	private String baseUrl;
-	
-	/*
-	 * Constructors
-	 */
-	public ServiceHandlerImpl() {
-	}
-	public ServiceHandlerImpl(String baseUrl) {
-		this.baseUrl = baseUrl;
-	}
-	
-	
-	/*
-	 * Invoke persistence service. Take a JSON input and return a JSON output.
-	 */
-	public String invoke(String serviceUrl, String serviceInput) {
-		  String output = "";	
-		  try {
+public class ServiceHandlerImpl  implements ServiceHandler {
 
-				URL url = new URL(baseUrl + serviceUrl);
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				conn.setDoOutput(true);
-				conn.setRequestMethod("POST");
-				conn.setRequestProperty("Content-Type", "application/json");
+    private final WebClient webClient;
 
-				OutputStream os = conn.getOutputStream();
-				os.write(serviceInput.getBytes());
-				os.flush();
+    public ServiceHandlerImpl(String baseUrl) {
+        this.webClient = WebClient.builder()
+                .baseUrl(baseUrl)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .codecs(configurer -> {
+                    configurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(
+                            new ObjectMapper()
+                                    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                                    .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")),
+                            MediaType.APPLICATION_JSON
+                    ));
+                    configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(
+                            new ObjectMapper()
+                                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false),
+                            MediaType.APPLICATION_JSON
+                    ));
+                })
+                .build();
+    }
 
-				if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
-					throw new PersistenceException(PersistenceException.HttpException, "HttpError", "Failed : HTTP error code : "
-							+ conn.getResponseCode() );						  
-				}
+    @Override
+    public Object invoke(String serviceUrl, Object serviceInput, ReturnType returnType, Class<?> elementType) {
+        switch (returnType) {
+            case LIST:
+                return postForList(serviceUrl, serviceInput, elementType);
+            default:
+                return postForObject(serviceUrl, serviceInput, elementType);
+        }
+    }
 
-				//read service output
-				BufferedReader br = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-				String line;
-				while ((line = br.readLine()) != null) {
-					output += line;
-				}
-				conn.disconnect();
-			  } catch (MalformedURLException e) {
-				e.printStackTrace();
-			  } catch (IOException e) {
-				e.printStackTrace();
-			 }
-		
-		//return
-		return output;
-		
-	}
-	
-	
+
+    public Object postForObject(String url, Object input, Class<?> elementType) {
+        // post
+        WebClient.ResponseSpec resp = this.webClient.post()
+                .uri(url)
+                .bodyValue(input)
+                .retrieve();
+
+        if (resp == null) {
+            return null;
+        }
+
+        Object object = resp
+                .bodyToMono(elementType)
+                .block();
+        return object;
+    }
+
+    public List<Object> postForList(String url, Object input, Class<?> elementType) {
+        WebClient.ResponseSpec resp = this.webClient.post()
+                .uri(url)
+                .bodyValue(input)
+                .retrieve();
+
+        if (resp == null) {
+            return new LinkedList<>();
+        }
+
+        List<Object> list = (List<Object>) resp
+                .bodyToFlux(elementType)
+                .collectList()
+                .block();
+
+        return list;
+    }
+
 }
