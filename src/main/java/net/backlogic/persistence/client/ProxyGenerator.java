@@ -1,8 +1,8 @@
 package net.backlogic.persistence.client;
 
-import net.backlogic.persistence.client.annotation.BacklogicCommand;
-import net.backlogic.persistence.client.annotation.BacklogicQuery;
-import net.backlogic.persistence.client.annotation.BacklogicRepository;
+import net.backlogic.persistence.client.annotation.CommandService;
+import net.backlogic.persistence.client.annotation.QueryService;
+import net.backlogic.persistence.client.annotation.RepositoryService;
 import net.backlogic.persistence.client.handler.ServiceHandler;
 import net.backlogic.persistence.client.handler.ServiceHandlerImpl;
 import net.backlogic.persistence.client.proxy.CommandProxy;
@@ -34,7 +34,7 @@ public class ProxyGenerator {
 
     public Object createRepository(Class<?> repositoryType) {
         //validate repository interface
-        BacklogicRepository repositoryAnnotation = repositoryType.getAnnotation(BacklogicRepository.class);
+        RepositoryService repositoryAnnotation = repositoryType.getAnnotation(RepositoryService.class);
         if (repositoryAnnotation == null) {
             throw new PersistenceException(PersistenceException.InterfaceException, "InvalidInterface", repositoryType.getName() + " is not repository interface");
         }
@@ -50,7 +50,7 @@ public class ProxyGenerator {
 
     public Object createQuery(Class<?> queryType) {
         //validate repository interface
-        BacklogicQuery queryAnnotation = queryType.getAnnotation(BacklogicQuery.class);
+        QueryService queryAnnotation = queryType.getAnnotation(QueryService.class);
         if (queryAnnotation == null) {
             throw new PersistenceException(PersistenceException.InterfaceException, "InvalidInterface", queryType.getName() + " is not query interface");
         }
@@ -65,7 +65,7 @@ public class ProxyGenerator {
 
     public Object createCommand(Class<?> commandType) {
         //validate repository interface
-        BacklogicCommand persistAnnotation = commandType.getAnnotation(BacklogicCommand.class);
+        CommandService persistAnnotation = commandType.getAnnotation(CommandService.class);
         if (persistAnnotation == null) {
             throw new PersistenceException(PersistenceException.InterfaceException, "InvalidInterface", commandType.getName() + " is not command interface");
         }

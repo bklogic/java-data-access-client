@@ -23,7 +23,7 @@ public class RepositoryProxy extends PersistenceProxy {
         String interfaceUrl, methodUrl;
 
         //interface url
-        BacklogicRepository interfaceAnnotation = method.getDeclaringClass().getAnnotation(BacklogicRepository.class);
+        RepositoryService interfaceAnnotation = method.getDeclaringClass().getAnnotation(RepositoryService.class);
         interfaceUrl = interfaceAnnotation.value();
         if (interfaceUrl == null || interfaceUrl == "") {
             interfaceUrl = interfaceAnnotation.url();
@@ -40,6 +40,8 @@ public class RepositoryProxy extends PersistenceProxy {
             methodUrl = "/delete";
         } else if (method.getAnnotation(Save.class) != null) {
             methodUrl = "/save";
+        } else if (method.getAnnotation(Merge.class) != null) {
+            methodUrl = "/merge";
         } else {
             throw new PersistenceException(PersistenceException.InterfaceException, "InvalidInterface", "Repository Interface method is not properly annotated");
         }

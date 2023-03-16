@@ -1,20 +1,20 @@
 package net.backlogic.persistence.client.classicmodel;
 
-import net.backlogic.persistence.client.annotation.BacklogicCommand;
-import net.backlogic.persistence.client.annotation.Name;
+import net.backlogic.persistence.client.annotation.CommandService;
+import net.backlogic.persistence.client.annotation.Query;
 
-@BacklogicCommand("/commands")
+@CommandService("/commands")
 public interface ClassicCommand {
 	
 	/*
 	 * clone a source product line
 	 */
-	@Name("duplicateProductLine")
+	@Query("duplicateProductLine")
 	void duplicateProductLine(String sourceProductLine, String targetProductLine);
 	
 	/*
 	 * Remove customer, along with orders and payments
 	 */
-	@Name("removeCustomer")
+	@Query("removeCustomer")
 	void removeCustomer(Integer customerNumber);
 }
