@@ -10,9 +10,6 @@ import net.backlogic.persistence.client.handler.ServiceHandler;
 
 import java.lang.reflect.Method;
 
-/**
- * @author Ken
- */
 public class CommandProxy extends PersistenceProxy {
 
     public CommandProxy(ServiceHandler serviceHandler) {

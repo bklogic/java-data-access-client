@@ -3,11 +3,6 @@
  */
 package net.backlogic.persistence.client;
 
-/**
- * @author Ken
- * Created on 10/20/2017
- */
-@SuppressWarnings("serial")
 public class DataAccessException extends RuntimeException {
     /**
      * exception type: service. For any invalid service condition
