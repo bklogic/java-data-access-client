@@ -24,11 +24,10 @@ public class DataAccessClientTest {
 	private static MockServiceHandler handler;
 
 	@BeforeAll
-	public static void setUpBeforeClass() throws Exception {
+	public static void setUp() throws Exception {
 		handler = new MockServiceHandler(baseUrl);
 		client = new DataAccessClient(handler);
 	}
-	
 
 	private Order getOrder() {
 		Order order = new Order();
