@@ -3,8 +3,8 @@
   <groupId>net.backlogic.persistence</groupId>
   <artifactId>persistence-client</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>persistence-client</name>
-  <description>Java Persistence Client</description>
+  <name>data-access-client</name>
+  <description>Java Data Access Client</description>
   
   <properties>
 	  <maven.compiler.source>11</maven.compiler.source>
