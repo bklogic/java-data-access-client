@@ -3,7 +3,7 @@
  */
 package net.backlogic.persistence.client.proxy;
 
-import net.backlogic.persistence.client.PersistenceException;
+import net.backlogic.persistence.client.DataAccessException;
 import net.backlogic.persistence.client.annotation.QueryService;
 import net.backlogic.persistence.client.annotation.Query;
 import net.backlogic.persistence.client.handler.ServiceHandler;
@@ -34,7 +34,7 @@ public class QueryProxy extends PersistenceProxy {
         //method url
         Query urlAnnotation = method.getAnnotation(Query.class);
         if (urlAnnotation == null) {
-            throw new PersistenceException(PersistenceException.InterfaceException, "InvalidInterface", "Url annotation is missing");
+            throw new DataAccessException(DataAccessException.InterfaceException, "InvalidInterface", "Url annotation is missing");
         } else {
             methodUrl = urlAnnotation.value();
         }

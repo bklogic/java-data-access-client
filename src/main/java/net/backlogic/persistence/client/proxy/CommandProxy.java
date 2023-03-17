@@ -3,7 +3,7 @@
  */
 package net.backlogic.persistence.client.proxy;
 
-import net.backlogic.persistence.client.PersistenceException;
+import net.backlogic.persistence.client.DataAccessException;
 import net.backlogic.persistence.client.annotation.Command;
 import net.backlogic.persistence.client.annotation.CommandService;
 import net.backlogic.persistence.client.handler.ServiceHandler;
@@ -33,7 +33,7 @@ public class CommandProxy extends PersistenceProxy {
         //method url
         Command urlAnnotation = method.getAnnotation(Command.class);
         if (urlAnnotation == null) {
-            throw new PersistenceException(PersistenceException.InterfaceException, "InvalidInterface", "Url annotation is missing");
+            throw new DataAccessException(DataAccessException.InterfaceException, "InvalidInterface", "Url annotation is missing");
         } else {
             methodUrl = urlAnnotation.value();
         }

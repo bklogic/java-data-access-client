@@ -3,7 +3,7 @@
  */
 package net.backlogic.persistence.client.proxy;
 
-import net.backlogic.persistence.client.PersistenceException;
+import net.backlogic.persistence.client.DataAccessException;
 import net.backlogic.persistence.client.annotation.*;
 import net.backlogic.persistence.client.handler.ServiceHandler;
 
@@ -43,7 +43,7 @@ public class RepositoryProxy extends PersistenceProxy {
         } else if (method.getAnnotation(Merge.class) != null) {
             methodUrl = "/merge";
         } else {
-            throw new PersistenceException(PersistenceException.InterfaceException, "InvalidInterface", "Repository Interface method is not properly annotated");
+            throw new DataAccessException(DataAccessException.InterfaceException, "InvalidInterface", "Repository Interface method is not properly annotated");
         }
 
         return UrlUtil.getUrl(interfaceUrl, methodUrl);

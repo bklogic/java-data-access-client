@@ -36,7 +36,7 @@ public class ProxyGenerator {
         //validate repository interface
         RepositoryService repositoryAnnotation = repositoryType.getAnnotation(RepositoryService.class);
         if (repositoryAnnotation == null) {
-            throw new PersistenceException(PersistenceException.InterfaceException, "InvalidInterface", repositoryType.getName() + " is not repository interface");
+            throw new DataAccessException(DataAccessException.InterfaceException, "InvalidInterface", repositoryType.getName() + " is not repository interface");
         }
 
         //instantiate repository interface proxy
@@ -52,7 +52,7 @@ public class ProxyGenerator {
         //validate repository interface
         QueryService queryAnnotation = queryType.getAnnotation(QueryService.class);
         if (queryAnnotation == null) {
-            throw new PersistenceException(PersistenceException.InterfaceException, "InvalidInterface", queryType.getName() + " is not query interface");
+            throw new DataAccessException(DataAccessException.InterfaceException, "InvalidInterface", queryType.getName() + " is not query interface");
         }
 
         //instantiate query interface proxy
@@ -67,7 +67,7 @@ public class ProxyGenerator {
         //validate repository interface
         CommandService persistAnnotation = commandType.getAnnotation(CommandService.class);
         if (persistAnnotation == null) {
-            throw new PersistenceException(PersistenceException.InterfaceException, "InvalidInterface", commandType.getName() + " is not command interface");
+            throw new DataAccessException(DataAccessException.InterfaceException, "InvalidInterface", commandType.getName() + " is not command interface");
         }
 
         //instantiate command interface proxy
