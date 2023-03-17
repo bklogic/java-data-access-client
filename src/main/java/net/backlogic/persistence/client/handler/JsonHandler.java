@@ -2,12 +2,15 @@ package net.backlogic.persistence.client.handler;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import net.backlogic.persistence.client.DataAccessException;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -51,6 +54,8 @@ public class JsonHandler {
                 return this.toList(jsonString, elementType);
             case OBJECT:
                 return this.toObject(jsonString, elementType);
+            case VALUE:
+                return this.readValue(jsonString);
             default:
                 return null;
         }
@@ -119,6 +124,29 @@ public class JsonHandler {
             throw new DataAccessException(DataAccessException.JsonException, "JsonIOException", e);
         }
         return set;
+    }
+
+    public Object readValue(String jsonString) {
+        Map<String, Object> map;
+        // parse json string
+        try {
+            TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
+            map = mapper.readValue(jsonString, typeRef);
+        } catch (JsonProcessingException e) {
+            throw new DataAccessException(DataAccessException.JsonException, "JsonProcessingException", e);
+        }
+        // find value
+        Object value = null;
+        if (map.isEmpty()) {
+            value = null;
+        } else if (map.size() == 1) {
+            for (Object val: map.values()) {
+                value = val;
+            }
+        } else {
+            throw new DataAccessException(DataAccessException.JsonException, "Multiple fields in service output: " + jsonString);
+        }
+        return value;
     }
 
 }

@@ -5,10 +5,10 @@ package net.backlogic.persistence.client.proxy;
 
 import net.backlogic.persistence.client.handler.ReturnType;
 import net.backlogic.persistence.client.handler.ServiceHandler;
+import net.backlogic.persistence.client.handler.TypeUtil;
 
 import java.lang.reflect.*;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -16,26 +16,6 @@ import java.util.List;
  * One proxy per persistence interface. Thus proxy is shared across threads, and should not contain private property.
  */
 public abstract class PersistenceProxy implements InvocationHandler {
-    /*
-     * To check whether a parameter is a primitive type
-     */
-    private static final HashSet<Class<?>> primitiveTypes;
-
-    static {
-        primitiveTypes = new HashSet<Class<?>>();
-        primitiveTypes.add(Boolean.class);
-        primitiveTypes.add(Character.class);
-        primitiveTypes.add(Byte.class);
-        primitiveTypes.add(Short.class);
-        primitiveTypes.add(Integer.class);
-        primitiveTypes.add(Long.class);
-        primitiveTypes.add(Float.class);
-        primitiveTypes.add(Double.class);
-        primitiveTypes.add(java.sql.Date.class);
-        primitiveTypes.add(java.util.Date.class);
-        primitiveTypes.add(java.util.Calendar.class);
-    }
-
     //http handler
     ServiceHandler serviceHandler;
 
@@ -66,6 +46,9 @@ public abstract class PersistenceProxy implements InvocationHandler {
             } else if (returnType == List.class && genericReturnType instanceof ParameterizedType) {
                 outputType = ReturnType.LIST;
                 elementType = (Class<?>) ((ParameterizedType) genericReturnType).getActualTypeArguments()[0];
+            } else if (TypeUtil.isPrimitive(returnType)) {
+                outputType = ReturnType.VALUE;
+                elementType = returnType;
             } else {
                 outputType = ReturnType.OBJECT;
                 elementType = returnType;
@@ -90,7 +73,7 @@ public abstract class PersistenceProxy implements InvocationHandler {
 
         if (params.length == 0) {
             return null;
-        } else if (params.length == 1 && !isPrimitiveType(params[0].getType())) {
+        } else if (params.length == 1 && !TypeUtil.isPrimitive(params[0].getType())) {
             return args[0];
         } else {
             //instantiate input map
@@ -102,10 +85,6 @@ public abstract class PersistenceProxy implements InvocationHandler {
             }
             return input;
         }
-    }
-
-    protected boolean isPrimitiveType(Class<?> type) {
-        return type.isPrimitive() || primitiveTypes.contains(type);
     }
 
 }
