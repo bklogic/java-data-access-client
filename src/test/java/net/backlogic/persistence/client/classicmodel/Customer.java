@@ -17,6 +17,9 @@ public class Customer {
 	Double creditLimit;
 	List<Order> orders;
 	List<Payment> payments;
+	public Customer(Integer customerNumber) {
+		this.customerNumber = customerNumber;
+	}
 	public Integer getCustomerNumber() {
 		return customerNumber;
 	}

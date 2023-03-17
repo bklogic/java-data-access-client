@@ -8,6 +8,10 @@ public class Payment {
 	String checkNumber;
 	Date paymentDate;
 	Double amount;
+
+	public Payment(Integer customerNumber) {
+		this.customerNumber = customerNumber;
+	}
 	public Integer getCustomerNumber() {
 		return customerNumber;
 	}

@@ -8,22 +8,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class UrlUtilTest {
 	@Test
 	public void testFormatUrl() {
-		assertEquals("null should be empty string", "", UrlUtil.formatUrl(null) );
-		assertEquals("empty string should be empty string", "", UrlUtil.formatUrl("") );
-		assertEquals("test should be /test", "/test", UrlUtil.formatUrl("test") );
-		assertEquals("test/ should be /test", "/test", UrlUtil.formatUrl("test/") );
-		assertEquals("/test/ should be /test", "/test", UrlUtil.formatUrl("/test/") );
-		assertEquals("/module/test should be /module/test", "/module/test", UrlUtil.formatUrl("/module/test") );
-		assertEquals("/module/test/ should be /module/test", "/module/test", UrlUtil.formatUrl("/module/test/") );
+		assertEquals("", UrlUtil.formatUrl(null) , "null should be empty string");
+		assertEquals("", UrlUtil.formatUrl(""), "empty string should be empty string" );
+		assertEquals("/test", UrlUtil.formatUrl("test"), "test should be /test" );
+		assertEquals("/test", UrlUtil.formatUrl("test/"), "test/ should be /test" );
+		assertEquals("/test", UrlUtil.formatUrl("/test/"), "/test/ should be /test" );
+		assertEquals("/module/test", UrlUtil.formatUrl("/module/test"), "/module/test should be /module/test" );
+		assertEquals("/module/test", UrlUtil.formatUrl("/module/test/"), "/module/test/ should be /module/test");
 	}
 
 	@Test
 	public void testGetUrl() {
-		assertEquals("null and test/ should be /test", "/test", UrlUtil.getUrl(null, "test/") );
-		assertEquals("empty string and test/ should be /test", "/test", UrlUtil.getUrl("", "test/") );
-		assertEquals("module and test/ should be /module/test", "/module/test", UrlUtil.getUrl("module", "test/") );
-		assertEquals("/module/ and /test/ should be /module/test", "/module/test", UrlUtil.getUrl("/module/", "/test/") );
+		assertEquals("/test", UrlUtil.getUrl(null, "test/"), "null and test/ should be /test" );
+		assertEquals("/test", UrlUtil.getUrl("", "test/"),"empty string and test/ should be /test" );
+		assertEquals("/module/test", UrlUtil.getUrl("module", "test/"),"module and test/ should be /module/test" );
+		assertEquals("/module/test", UrlUtil.getUrl("/module/", "/test/"), "/module/ and /test/ should be /module/test");
 	}
-	
-	
+
 }

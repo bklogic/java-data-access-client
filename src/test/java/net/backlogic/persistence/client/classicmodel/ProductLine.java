@@ -8,7 +8,12 @@ public class ProductLine {
 	String htmlDescription;
 	byte[] image;
 	List<Product> products;
-	
+
+	public ProductLine() {
+	}
+	public ProductLine(String productLine) {
+		this.productLine = productLine;
+	}
 	public String getProductLine() {
 		return productLine;
 	}

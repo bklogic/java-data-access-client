@@ -13,7 +13,11 @@ public class Order {
 	Integer customerNumber;
 	String customerName;
 	List<OrderDetail> orderDetails;
-	
+
+	public Order() {}
+	public Order(Long orderNumber) {
+		this.orderNumber = orderNumber;
+	}
 	public List<OrderDetail> getOrderDetails() {
 		return orderDetails;
 	}

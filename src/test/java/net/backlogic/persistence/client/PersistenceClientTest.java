@@ -7,18 +7,25 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+/**
+Test query, command and repository interfaces, to assert that Access client can
+ - formulate the right service URL
+ - formulate right input
+ - invoke the right service handler method
+ */
 public class PersistenceClientTest {
-	
+	private static String baseUrl = "http://localhost/acct/app";
 	private static PersistenceClient client;
 	private static MockServiceHandler handler;
 
 	@BeforeAll
 	public static void setUpBeforeClass() throws Exception {
-		handler = new MockServiceHandler("http://localhost/acct/app");
+		handler = new MockServiceHandler(baseUrl);
 		client = new PersistenceClient(handler);
 	}
 	
@@ -37,117 +44,159 @@ public class PersistenceClientTest {
 		orders.add(getOrder());
 		return orders;
 	}		
-	@Test
-	public void testOrderRepository() {
-		Order order; List<Order> orders; String input;
-		OrderRepository repository = (OrderRepository) client.getRepository(OrderRepository.class);
-		
-		//read
-		handler.setOutput("/repositories/order/read", "[{\"orderNumber\":null,\"orderDate\":null,\"requiredDate\":null,\"shippedDate\":null,\"status\":null,\"comments\":null,\"customerNumber\":null,\"customerName\":null,\"orderDetails\":[{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null},{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null}]},{\"orderNumber\":null,\"orderDate\":null,\"requiredDate\":null,\"shippedDate\":null,\"status\":null,\"comments\":null,\"customerNumber\":null,\"customerName\":null,\"orderDetails\":[{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null},{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null}]}]");
-		orders = repository.getOrdersByCustomer(123);
-		assertEquals("/repositories/order/read", handler.getServiceUrl());
-//		input = handler.getServiceInput();
-//		assertEquals("{\"customerNumber\":123}", input);
-		assertEquals(true, orders.size()>0);
-		assertEquals(true, orders.get(0) instanceof Order);
-		
-		//save
-		handler.setOutput("/repositories/order/save", "[{\"orderNumber\":null,\"orderDate\":null,\"requiredDate\":null,\"shippedDate\":null,\"status\":null,\"comments\":null,\"customerNumber\":null,\"customerName\":null,\"orderDetails\":[{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null},{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null}]},{\"orderNumber\":null,\"orderDate\":null,\"requiredDate\":null,\"shippedDate\":null,\"status\":null,\"comments\":null,\"customerNumber\":null,\"customerName\":null,\"orderDetails\":[{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null},{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null}]}]");
-		orders = getOrderList();
-		orders = repository.save(orders);
-		assertEquals("/repositories/order/save", handler.getServiceUrl());
-//		input = handler.getServiceInput();
-//		assertEquals("[{\"orderNumber\":null,\"orderDate\":null,\"requiredDate\":null,\"shippedDate\":null,\"status\":null,\"comments\":null,\"customerNumber\":null,\"customerName\":null,\"orderDetails\":[{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null},{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null}]},{\"orderNumber\":null,\"orderDate\":null,\"requiredDate\":null,\"shippedDate\":null,\"status\":null,\"comments\":null,\"customerNumber\":null,\"customerName\":null,\"orderDetails\":[{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null},{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null}]}]", input);
-		assertEquals(true, orders.size()>0);
-		assertEquals(true, orders.get(0) instanceof Order);
-				
-		//create
-		handler.setOutput("/repositories/order/create", "{\"orderNumber\":1234,\"orderDate\":null,\"requiredDate\":null,\"shippedDate\":null,\"status\":null,\"comments\":null,\"customerNumber\":null,\"customerName\":null,\"orderDetails\":[{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null}]}");
-		order = getOrder();
-		order = repository.create(order);
-		assertEquals("/repositories/order/create", handler.getServiceUrl());
-//		input = handler.getServiceInput();
-//		assertEquals("{\"orderNumber\":null,\"orderDate\":null,\"requiredDate\":null,\"shippedDate\":null,\"status\":null,\"comments\":null,\"customerNumber\":null,\"customerName\":null,\"orderDetails\":[{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null},{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null}]}", input);
-		assertNotNull(order);
-		assertEquals((Long)1234L, order.getOrderNumber());
-		
-		//update
-		handler.setOutput("/repositories/order/update", "{\"orderNumber\":1234,\"orderDate\":null,\"requiredDate\":null,\"shippedDate\":null,\"status\":null,\"comments\":null,\"customerNumber\":null,\"customerName\":null,\"orderDetails\":[{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null}]}");
-		order = getOrder();
-		order = repository.update(order);
-		assertEquals("/repositories/order/update", handler.getServiceUrl());
-//		input = handler.getServiceInput();
-//		assertEquals("{\"orderNumber\":null,\"orderDate\":null,\"requiredDate\":null,\"shippedDate\":null,\"status\":null,\"comments\":null,\"customerNumber\":null,\"customerName\":null,\"orderDetails\":[{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null},{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null}]}", input);
-		assertNotNull(order);
-		assertEquals((Long)1234L, order.getOrderNumber());	
-		
-		//delete
-		handler.setOutput("/repositories/order/delete", "{}");
-		order = getOrder();
-		repository.delete(order);
-		assertEquals("/repositories/order/delete", handler.getServiceUrl());
-//		input = handler.getServiceInput();
-//		assertEquals("{\"orderNumber\":null,\"orderDate\":null,\"requiredDate\":null,\"shippedDate\":null,\"status\":null,\"comments\":null,\"customerNumber\":null,\"customerName\":null,\"orderDetails\":[{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null},{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null}]}", input);
-
-	}
-		
-	
-	@Test
-	public void testClassicQuery() {
-		List<ProductLine> productLines; String input;
-		ClassicQuery query = (ClassicQuery)client.getQuery(ClassicQuery.class);
-		
-		//get product lines
-		handler.setOutput("/queries/getProductLines", "[{\"productLine\":null,\"textDescription\":null,\"htmlDescription\":null,\"image\":null,\"products\":[{\"productCode\":null,\"productName\":null,\"productLine\":null,\"productScale\":null,\"productVendor\":null,\"productDescription\":null,\"quantityInStock\":null,\"buyPrice\":null,\"msrp\":null}]},{\"productLine\":null,\"textDescription\":null,\"htmlDescription\":null,\"image\":null,\"products\":[{\"productCode\":null,\"productName\":null,\"productLine\":null,\"productScale\":null,\"productVendor\":null,\"productDescription\":null,\"quantityInStock\":null,\"buyPrice\":null,\"msrp\":null}]}]");
-		productLines = query.getProductLines();
-		assertEquals("/queries/getProductLines", handler.getServiceUrl());
-//		input = handler.getServiceInput();
-//		assertEquals("{}", input);
-		assertEquals(true, productLines.size()>0 );
-		assertEquals(true, productLines.get(0) instanceof ProductLine);		
-		assertEquals(true, productLines.get(0).getProducts().get(0) instanceof Product);		
-	}
 
 	@Test
-	public void testClassicQuery2() {
-		Customer customer; String input;
-		ClassicQuery query = (ClassicQuery)client.getQuery(ClassicQuery.class);
-		
-		//get product lines
-		handler.setOutput("/queries/getCustomer", "{\"customerNumber\":null,\"customerName\":null,\"contactLastName\":null,\"contactFirstName\":null,\"phone\":null,\"addressLine1\":null,\"addressLine2\":null,\"city\":null,\"state\":null,\"postalCode\":null,\"country\":null,\"creditLimit\":null,\"orders\":[{\"orderNumber\":null,\"orderDate\":null,\"requiredDate\":null,\"shippedDate\":null,\"status\":null,\"comments\":null,\"customerNumber\":null,\"customerName\":null,\"orderDetails\":[{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null},{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null}]},{\"orderNumber\":null,\"orderDate\":null,\"requiredDate\":null,\"shippedDate\":null,\"status\":null,\"comments\":null,\"customerNumber\":null,\"customerName\":null,\"orderDetails\":[{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null},{\"orderNumber\":null,\"productCode\":null,\"productName\":null,\"quantityOrdered\":null,\"priceEach\":null,\"orderLineNumber\":null}]}],\"payments\":[{\"customerNumber\":null,\"customerName\":null,\"checkNumber\":null,\"paymentDate\":null,\"amount\":null}]}");
-		customer = query.getCustomer(1234);
-		assertEquals("/queries/getCustomer", handler.getServiceUrl());
-//		input = handler.getServiceInput();
-//		assertEquals("{\"customerNumber\":1234}", input);
-		assertEquals(true, customer.getOrders().size()>0 );
-		assertEquals(true, customer.getOrders().get(0) instanceof Order);
-		assertEquals(true, customer.getPayments().size()>0 );
-		assertEquals(true, customer.getPayments().get(0) instanceof Payment);
+	public void testQuery() {
+		// get query proxy
+		ClassicQuery query = (ClassicQuery) client.getQuery(ClassicQuery.class);
+
+		// prepare service handler
+		String url = baseUrl + "/queries/getCustomer";
+		Customer customer = new Customer(101);
+		handler.addOutput(url, customer);
+
+		// test url and invocation
+		Customer returnedCustomer = query.getCustomer(1234);
+		assertNotNull(returnedCustomer);
+		assertEquals(customer.getCustomerNumber(), returnedCustomer.getCustomerNumber());
+
+		// test input - single primitive
+		Object returnedInput;
+		query.getCustomer(1234);
+		returnedInput = handler.getInput(url);
+		assertNotNull(returnedInput);
+		assumeTrue(returnedInput instanceof Map);
+		assertEquals(1234, ((Map)returnedInput).get("customerNumber"));
+
+		// test input - multiple primitives
+		query.getCustomer("CA", "Los Angeles", "90083");
+		returnedInput = handler.getInput(url);
+		assertNotNull(returnedInput);
+		assumeTrue(returnedInput instanceof Map);
+		assertEquals("CA", ((Map)returnedInput).get("state"));
+		assertEquals("Los Angeles", ((Map)returnedInput).get("city"));
+		assertEquals("90083", ((Map)returnedInput).get("postalCode"));
+
+		// test input - single object
+		Order order = new Order(100L);
+		query.getCustomer(order);
+		returnedInput = handler.getInput(url);
+		assertNotNull(returnedInput);
+		assumeTrue(returnedInput instanceof Order);
+		assertEquals(100L, ((Order)returnedInput).getOrderNumber());
+
+		// test input - multiple objects
+		Payment payment = new Payment(1234);
+		query.getCustomer(order, payment);
+		returnedInput = handler.getInput(url);
+		assertNotNull(returnedInput);
+		assumeTrue(returnedInput instanceof Map);
+		assertEquals(order, ((Map)returnedInput).get("order"));
+		assertEquals(payment, ((Map)returnedInput).get("payment"));
+
+		// test input - mixed objects and primitive
+		query.getCustomer(1234, order, payment);
+		returnedInput = handler.getInput(url);
+		assertNotNull(returnedInput);
+		assumeTrue(returnedInput instanceof Map);
+		assertEquals(1234, ((Map)returnedInput).get("customerNumber"));
+		assertEquals(order, ((Map)returnedInput).get("order"));
+		assertEquals(payment, ((Map)returnedInput).get("payment"));
+
+		// test another method of the interface
+		url = baseUrl + "/queries/getProductLines";
+		List<ProductLine> productLines = new ArrayList<>();
+		productLines.add(new ProductLine("NewLine"));
+		handler.addOutput(url, productLines);
+		Object output = query.getProductLines();
+		assertNotNull(output);
+		assertTrue(output instanceof List);
+		assertTrue( ((List<?>) output).get(0) instanceof ProductLine);
+		assertEquals("NewLine", ((ProductLine)((List<?>) output).get(0)).getProductLine()); ;
 	}
 
 	@Test
-	public void testClassicCommand() {
-		String input;
+	public void testCommand() {
+		// command proxy
 		ClassicCommand command = (ClassicCommand)client.getCommand(ClassicCommand.class);
-		
-		//get product lines
-		handler.setOutput("/commands/duplicateProductLine", "{\"productLine\":null,\"textDescription\":null,\"htmlDescription\":null,\"image\":null,\"products\":[{\"productCode\":null,\"productName\":null,\"productLine\":null,\"productScale\":null,\"productVendor\":null,\"productDescription\":null,\"quantityInStock\":null,\"buyPrice\":null,\"msrp\":null}]},{\"productLine\":null,\"textDescription\":null,\"htmlDescription\":null,\"image\":null,\"products\":[{\"productCode\":null,\"productName\":null,\"productLine\":null,\"productScale\":null,\"productVendor\":null,\"productDescription\":null,\"quantityInStock\":null,\"buyPrice\":null,\"msrp\":null}]}");
-		command.duplicateProductLine("Car", "Boat");
-		assertEquals("/commands/duplicateProductLine", handler.getServiceUrl());
-//		input = handler.getServiceInput();
-//		assertEquals("{\"sourceProductLine\":\"Car\",\"targetProductLine\":\"Boat\"}", input);
-	}	
-	
-	@Test
-	public void testClassicCommand2() {
-		String input;
-		ClassicCommand command = (ClassicCommand)client.getCommand(ClassicCommand.class);
-		
-		//get product lines
-		handler.setOutput("/commands/removeCustomer", "{}");
+
+		// prepare service handler
+		String url = baseUrl + "/commands/duplicateProductLine";
+		ProductLine productLine = new ProductLine("Boat");
+		handler.addOutput(url, productLine);
+
+		// test url and invocation
+		ProductLine output = command.duplicateProductLine("Car", "Boat");
+		assertNotNull(output);
+		assertEquals("Boat", output.getProductLine());
+
+		// test input
+		Object input = handler.getInput(url);
+		assertTrue(input instanceof Map);
+		assertEquals( "Car", ((Map)input).get("sourceProductLine"));
+
+		// test another method
+		url = baseUrl + "/commands/removeCustomer";
 		command.removeCustomer(1234);
-		assertEquals("/commands/removeCustomer", handler.getServiceUrl());
-//		input = handler.getServiceInput();
-//		assertEquals("{\"customerNumber\":1234}", input);
-	}	
+		input = handler.getInput(url);
+		assertNotNull(input);
+		assertTrue(input instanceof Map);
+		assertEquals( 1234, ((Map)input).get("customerNumber"));
+	}
+
+	@Test
+	public void testRepository() {
+		// repository proxy
+		OrderRepository repository = (OrderRepository) client.getRepository(OrderRepository.class);
+
+		// prepare
+		String url = baseUrl + "/repositories/order";
+		Order order = new Order(100L);
+		List<Order> orders = new ArrayList();
+		orders.add(order);
+		Object input = null;
+		Object output = null;
+
+		// test read
+		handler.addOutput(url + "/read", orders);
+		output = repository.getOrdersByCustomer(1234);
+		assertEquals(orders, output);
+		handler.addOutput(url + "/read", order);
+		output = repository.getOrderById(100);
+		assertEquals(order, output);
+
+		// test create
+		handler.addOutput(url + "/create", order);
+		output = repository.create(order);
+		assertEquals(order, output);
+
+		// test update
+		handler.addOutput(url + "/update", order);
+		output = repository.update(order);
+		assertEquals(order, output);
+
+		//delete
+		repository.delete(order);
+		input = handler.getInput(url + "/delete");
+		assertEquals(order, input);
+		repository.delete(1234);
+		input = handler.getInput(url + "/delete");
+		assertNotNull(input);
+		assertTrue(input instanceof Map);
+		assertEquals(1234, ((Map)input).get("orderNumber") );
+
+		// test save
+		handler.addOutput(url + "/save", orders);
+		output = repository.save(orders);
+		assertEquals(orders, output);
+		handler.addOutput(url + "/save", order);
+		output = repository.save(order);
+		assertEquals(order, output);
+
+		// test merge
+		handler.addOutput(url + "/merge", order);
+		output = repository.merge(order);
+		assertEquals(order, output);
+	}
+
 }

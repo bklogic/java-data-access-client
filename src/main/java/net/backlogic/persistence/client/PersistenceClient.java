@@ -29,6 +29,7 @@ public class PersistenceClient {
      */
     public PersistenceClient(ServiceHandler serviceHandler) {
         this.generator = new ProxyGenerator(serviceHandler);
+        this.proxyCache = new HashMap<Class<?>, Object>();
     }
 
     /**

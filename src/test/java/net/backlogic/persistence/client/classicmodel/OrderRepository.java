@@ -1,13 +1,8 @@
 package net.backlogic.persistence.client.classicmodel;
 
-import java.util.List;
+import net.backlogic.persistence.client.annotation.*;
 
-import net.backlogic.persistence.client.annotation.RepositoryService;
-import net.backlogic.persistence.client.annotation.Create;
-import net.backlogic.persistence.client.annotation.Delete;
-import net.backlogic.persistence.client.annotation.Read;
-import net.backlogic.persistence.client.annotation.Save;
-import net.backlogic.persistence.client.annotation.Update;
+import java.util.List;
 
 @RepositoryService("/repositories/order")
 public interface OrderRepository {
@@ -20,10 +15,19 @@ public interface OrderRepository {
 	
 	@Delete
 	void delete(Order order);
-	
+
+	@Delete
+	void delete(int orderNumber);
+
 	@Save
 	List<Order> save(List<Order> orders);
-	
+
+	@Save
+	Order save(Order order);
+
+	@Merge
+	Order merge(Order order);
+
 	@Read
 	public Order getOrderById(Integer orderNumber);
 	
