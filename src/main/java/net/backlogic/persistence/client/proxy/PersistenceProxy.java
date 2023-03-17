@@ -57,7 +57,7 @@ public abstract class PersistenceProxy implements InvocationHandler {
 
             // output type  TODO: validate supported return types  getGenericReturnType(), getReturnType()
             ReturnType outputType;
-            Type elementType;
+            Class<?> elementType;
             Class<?> returnType = m.getReturnType();
             Type genericReturnType = m.getGenericReturnType();
             if (returnType.getName() == "void") {
@@ -65,14 +65,14 @@ public abstract class PersistenceProxy implements InvocationHandler {
                 elementType = Void.class;
             } else if (returnType == List.class && genericReturnType instanceof ParameterizedType) {
                 outputType = ReturnType.LIST;
-                elementType = ((ParameterizedType) genericReturnType).getActualTypeArguments()[0];
+                elementType = (Class<?>) ((ParameterizedType) genericReturnType).getActualTypeArguments()[0];
             } else {
                 outputType = ReturnType.OBJECT;
                 elementType = returnType;
             }
 
             // invoke service
-            Object output = this.serviceHandler.invoke(serviceUrl, input, outputType, elementType.getClass());
+            Object output = this.serviceHandler.invoke(serviceUrl, input, outputType, elementType);
 
             //return
             return output;

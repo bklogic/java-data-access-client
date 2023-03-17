@@ -29,37 +29,26 @@ public class DataAccessException extends RuntimeException {
      */
     public static final String HttpException = "HttpException";
 
-
-    /**
-     * exception type
-     */
-    String type;
     /**
      * exception name
      */
     String name;
 
-
     /**
-     * @param type    exception type
      * @param name    exception name
      * @param message exception message
      */
-    public DataAccessException(String type, String name, String message) {
+    public DataAccessException(String name, String message) {
         super(message);
-        this.type = type;
         this.name = name;
     }
 
-
     /**
-     * @param type  exception type
      * @param name  exception name
      * @param cause exception cause
      */
-    public DataAccessException(String type, String name, Throwable cause) {
-        super(cause);
-        this.type = type;
+    public DataAccessException(String name, String message, Throwable cause) {
+        super(message + " >> " + cause.getMessage(), cause);
         this.name = name;
     }
 

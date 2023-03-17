@@ -34,7 +34,7 @@ public class QueryProxy extends PersistenceProxy {
         //method url
         Query urlAnnotation = method.getAnnotation(Query.class);
         if (urlAnnotation == null) {
-            throw new DataAccessException(DataAccessException.InterfaceException, "InvalidInterface", "Url annotation is missing");
+            throw new DataAccessException(DataAccessException.InterfaceException, "Url annotation is missing");
         } else {
             methodUrl = urlAnnotation.value();
         }

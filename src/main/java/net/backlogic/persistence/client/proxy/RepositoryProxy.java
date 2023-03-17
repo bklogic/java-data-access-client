@@ -43,7 +43,7 @@ public class RepositoryProxy extends PersistenceProxy {
         } else if (method.getAnnotation(Merge.class) != null) {
             methodUrl = "/merge";
         } else {
-            throw new DataAccessException(DataAccessException.InterfaceException, "InvalidInterface", "Repository Interface method is not properly annotated");
+            throw new DataAccessException(DataAccessException.InterfaceException, "Repository Interface method is not properly annotated");
         }
 
         return UrlUtil.getUrl(interfaceUrl, methodUrl);

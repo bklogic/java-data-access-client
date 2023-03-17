@@ -3,8 +3,8 @@ package net.backlogic.persistence.client;
 import net.backlogic.persistence.client.annotation.CommandService;
 import net.backlogic.persistence.client.annotation.QueryService;
 import net.backlogic.persistence.client.annotation.RepositoryService;
+import net.backlogic.persistence.client.handler.DefaultServiceHandler;
 import net.backlogic.persistence.client.handler.ServiceHandler;
-import net.backlogic.persistence.client.handler.ServiceHandlerImpl;
 import net.backlogic.persistence.client.proxy.CommandProxy;
 import net.backlogic.persistence.client.proxy.QueryProxy;
 import net.backlogic.persistence.client.proxy.RepositoryProxy;
@@ -22,7 +22,7 @@ public class ProxyGenerator {
      * Construct proxy generator
      */
     public ProxyGenerator(String baseUrl) {
-        this.serviceHandler = new ServiceHandlerImpl(baseUrl);
+        this.serviceHandler = new DefaultServiceHandler(baseUrl);
     }
 
     /*
@@ -36,7 +36,7 @@ public class ProxyGenerator {
         //validate repository interface
         RepositoryService repositoryAnnotation = repositoryType.getAnnotation(RepositoryService.class);
         if (repositoryAnnotation == null) {
-            throw new DataAccessException(DataAccessException.InterfaceException, "InvalidInterface", repositoryType.getName() + " is not repository interface");
+            throw new DataAccessException(DataAccessException.InterfaceException, repositoryType.getName() + " is not repository interface");
         }
 
         //instantiate repository interface proxy
@@ -52,7 +52,7 @@ public class ProxyGenerator {
         //validate repository interface
         QueryService queryAnnotation = queryType.getAnnotation(QueryService.class);
         if (queryAnnotation == null) {
-            throw new DataAccessException(DataAccessException.InterfaceException, "InvalidInterface", queryType.getName() + " is not query interface");
+            throw new DataAccessException(DataAccessException.InterfaceException, queryType.getName() + " is not query interface");
         }
 
         //instantiate query interface proxy
@@ -67,7 +67,7 @@ public class ProxyGenerator {
         //validate repository interface
         CommandService persistAnnotation = commandType.getAnnotation(CommandService.class);
         if (persistAnnotation == null) {
-            throw new DataAccessException(DataAccessException.InterfaceException, "InvalidInterface", commandType.getName() + " is not command interface");
+            throw new DataAccessException(DataAccessException.InterfaceException, commandType.getName() + " is not command interface");
         }
 
         //instantiate command interface proxy

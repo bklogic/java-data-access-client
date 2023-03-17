@@ -30,7 +30,7 @@ public class CommandProxy extends PersistenceProxy {
         //method url
         Command urlAnnotation = method.getAnnotation(Command.class);
         if (urlAnnotation == null) {
-            throw new DataAccessException(DataAccessException.InterfaceException, "InvalidInterface", "Url annotation is missing");
+            throw new DataAccessException(DataAccessException.InterfaceException, "Url annotation is missing");
         } else {
             methodUrl = urlAnnotation.value();
         }
