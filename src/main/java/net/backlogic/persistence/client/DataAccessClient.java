@@ -1,6 +1,7 @@
 package net.backlogic.persistence.client;
 
 import net.backlogic.persistence.client.handler.ServiceHandler;
+import net.backlogic.persistence.client.proxy.ProxyFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,9 +9,9 @@ import java.util.Map;
 
 public class DataAccessClient {
     /*
-     * proxy generator
+     * proxy proxyFactory
      */
-    private final ProxyGenerator generator;
+    private final ProxyFactory proxyFactory;
     /*
      * Proxy cache. Key=interface class, value = interface proxy
      */
@@ -20,7 +21,7 @@ public class DataAccessClient {
      * Construct persistence client
      */
     public DataAccessClient(String baseUrl) {
-        this.generator = new ProxyGenerator(baseUrl);
+        this.proxyFactory = new ProxyFactory(baseUrl);
         this.proxyCache = new HashMap<Class<?>, Object>();
     }
 
@@ -28,7 +29,7 @@ public class DataAccessClient {
      * Construct persistence client
      */
     public DataAccessClient(ServiceHandler serviceHandler) {
-        this.generator = new ProxyGenerator(serviceHandler);
+        this.proxyFactory = new ProxyFactory(serviceHandler);
         this.proxyCache = new HashMap<Class<?>, Object>();
     }
 
@@ -41,7 +42,7 @@ public class DataAccessClient {
     public Object getQuery(Class<?> queryType) {
         Object proxy = proxyCache.get(queryType);
         if (proxy == null) {
-            proxy = generator.createQuery(queryType);
+            proxy = proxyFactory.createQuery(queryType);
             this.proxyCache.put(queryType, proxy);
         }
         return proxy;
@@ -57,7 +58,7 @@ public class DataAccessClient {
     public Object getCommand(Class<?> commandType) {
         Object proxy = proxyCache.get(commandType);
         if (proxy == null) {
-            proxy = generator.createCommand(commandType);
+            proxy = proxyFactory.createCommand(commandType);
             this.proxyCache.put(commandType, proxy);
         }
         return proxy;
@@ -72,7 +73,7 @@ public class DataAccessClient {
     public Object getRepository(Class<?> repositoryType) {
         Object proxy = proxyCache.get(repositoryType);
         if (proxy == null) {
-            proxy = generator.createRepository(repositoryType);
+            proxy = proxyFactory.createRepository(repositoryType);
             this.proxyCache.put(repositoryType, proxy);
         }
         return proxy;

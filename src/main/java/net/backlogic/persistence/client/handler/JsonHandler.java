@@ -1,18 +1,22 @@
 package net.backlogic.persistence.client.handler;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.*;
-import net.backlogic.persistence.client.DataAccessException;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+import net.backlogic.persistence.client.DataAccessException;
+import net.backlogic.persistence.client.ServerException;
 
 /**
  * Handling JSON-Object conversion.
@@ -65,7 +69,8 @@ public class JsonHandler {
     public DataAccessException readException(String jsonString) {
         DataAccessException exception;
         try {
-            exception = (DataAccessException) toObject(jsonString, DataAccessException.class);
+        	ServerException se = (ServerException) toObject(jsonString, ServerException.class);
+        	exception = new DataAccessException("ServiceException", se.getStatus() + " - " + se.getMessage());
         } catch (Exception e) {
             exception = new DataAccessException("ExceptionHandlingError", "json text: " + jsonString, e);
         }

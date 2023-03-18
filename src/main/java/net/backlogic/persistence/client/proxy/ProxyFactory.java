@@ -1,34 +1,32 @@
-package net.backlogic.persistence.client;
+package net.backlogic.persistence.client.proxy;
 
+import net.backlogic.persistence.client.DataAccessException;
 import net.backlogic.persistence.client.annotation.CommandService;
 import net.backlogic.persistence.client.annotation.QueryService;
 import net.backlogic.persistence.client.annotation.RepositoryService;
 import net.backlogic.persistence.client.handler.DefaultServiceHandler;
 import net.backlogic.persistence.client.handler.ServiceHandler;
-import net.backlogic.persistence.client.proxy.CommandProxy;
-import net.backlogic.persistence.client.proxy.QueryProxy;
-import net.backlogic.persistence.client.proxy.RepositoryProxy;
 
 import java.lang.reflect.Proxy;
 
 /**
  * Responsible for generating persistence proxy from interface
  */
-public class ProxyGenerator {
+public class ProxyFactory {
     // service handler
     private final ServiceHandler serviceHandler;
 
     /*
      * Construct proxy generator
      */
-    public ProxyGenerator(String baseUrl) {
+    public ProxyFactory(String baseUrl) {
         this.serviceHandler = new DefaultServiceHandler(baseUrl);
     }
 
     /*
      * Construct proxy generator with mock service handler
      */
-    public ProxyGenerator(ServiceHandler serviceHandler) {
+    public ProxyFactory(ServiceHandler serviceHandler) {
         this.serviceHandler = serviceHandler;
     }
 
@@ -40,8 +38,9 @@ public class ProxyGenerator {
         }
 
         //instantiate repository interface proxy
+        String interfaceUrl = repositoryAnnotation.value();
         Object proxy = Proxy.newProxyInstance(
-                repositoryType.getClassLoader(), new Class[]{repositoryType}, new RepositoryProxy(serviceHandler)
+                repositoryType.getClassLoader(), new Class[]{repositoryType}, new RepositoryProxy(serviceHandler, interfaceUrl)
         );
 
         return proxy;

@@ -33,6 +33,9 @@ public class DataAccessException extends RuntimeException {
      * exception name
      */
     String name;
+    
+    
+    public DataAccessException() {}
 
     /**
      * @param name    exception name

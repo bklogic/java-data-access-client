@@ -13,21 +13,24 @@ import java.lang.reflect.Method;
  * Repository Proxy class. Responsible for handling Repository requests.
  */
 public class RepositoryProxy extends PersistenceProxy {
+	
+	private String interfaceUrl;
 
-    public RepositoryProxy(ServiceHandler serviceHandler) {
+    public RepositoryProxy(ServiceHandler serviceHandler, String interfaceUrl) {
         super(serviceHandler);
+        this.interfaceUrl = interfaceUrl;
     }
 
     @Override
     protected String getServiceUrl(Method method) {
-        String interfaceUrl, methodUrl;
+        String methodUrl;
 
-        //interface url
-        RepositoryService interfaceAnnotation = method.getDeclaringClass().getAnnotation(RepositoryService.class);
-        interfaceUrl = interfaceAnnotation.value();
-        if (interfaceUrl == null || interfaceUrl == "") {
-            interfaceUrl = interfaceAnnotation.url();
-        }
+//        //interface url
+//        RepositoryService interfaceAnnotation = method.getDeclaringClass().getAnnotation(RepositoryService.class);
+//        interfaceUrl = interfaceAnnotation.value();
+//        if (interfaceUrl == null || interfaceUrl == "") {
+//            interfaceUrl = interfaceAnnotation.url();
+//        }
 
         //method url
         if (method.getAnnotation(Read.class) != null) {
@@ -46,7 +49,7 @@ public class RepositoryProxy extends PersistenceProxy {
             throw new DataAccessException(DataAccessException.InterfaceException, "Repository Interface method is not properly annotated");
         }
 
-        return UrlUtil.getUrl(interfaceUrl, methodUrl);
+        return UrlUtil.getUrl(this.interfaceUrl, methodUrl);
     }
 
 }
