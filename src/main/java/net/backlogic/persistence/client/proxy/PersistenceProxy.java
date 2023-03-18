@@ -8,8 +8,10 @@ import net.backlogic.persistence.client.handler.ServiceHandler;
 import net.backlogic.persistence.client.handler.TypeUtil;
 
 import java.lang.reflect.*;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Proxy Strategy:
@@ -68,23 +70,55 @@ public abstract class PersistenceProxy implements InvocationHandler {
 
     protected Object getInput(Method method, Object[] args) {
         //get method parameters
-        Parameter param;
         Parameter[] params = method.getParameters();
 
-        if (params.length == 0) {
-            return null;
-        } else if (params.length == 1 && !TypeUtil.isPrimitive(params[0].getType())) {
-            return args[0];
+        // construct input
+        Object input;
+        if (params.length == 0) { 
+        	// no parameter
+            input = null;
+        } else if (params.length == 1) { 
+        	Class<?> paramType = method.getParameterTypes()[0];
+        	if ( TypeUtil.isPrimitive(paramType) ) {
+                input = this.createInputMap(params, args);        		
+        	} else if (Collection.class.isAssignableFrom(paramType)) {
+        		// collection 
+        		Type type = method.getGenericParameterTypes()[0];
+        		if (type instanceof ParameterizedType) {
+                    Class<?> elementType = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
+                    if (TypeUtil.isPrimitive(elementType)) {
+                    	// collection of primitive
+                    	input = this.createInputMap(params, args);
+                    } else {
+                    	// collection of objects
+                    	input = args[0];
+                    }
+        		} else {
+        			// not parameterized.  maybe should throw exception here?	
+                	input = args[0]; 		
+        		}
+        	} else {
+	        	// single object
+	            input = args[0];
+	        }
         } else {
-            //instantiate input map
-            HashMap<String, Object> input = new HashMap<String, Object>();
-            //add args to input
-            for (int i = 0; i < params.length; i++) {
-                param = params[i];
-                input.put(param.getName(), args[i]);
-            }
-            return input;
+            return this.createInputMap(params, args);
         }
+        
+        return input;
+    }
+    
+    
+    private Map<String, Object> createInputMap(Parameter[] params, Object[] args) {
+        //instantiate input map
+        Map<String, Object> map = new HashMap<String, Object>();
+        
+        //add args to input
+        for (int i = 0; i < params.length; i++) {
+            Parameter param = params[i];
+            map.put(param.getName(), args[i]);
+        }
+        return map;
     }
 
 }

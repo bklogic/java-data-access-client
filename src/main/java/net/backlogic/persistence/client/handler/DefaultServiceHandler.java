@@ -22,7 +22,7 @@ public class DefaultServiceHandler implements ServiceHandler {
 
     public DefaultServiceHandler(String baseUrl) {
         this.baseUrl = baseUrl;
-        this.httpClient = HttpClient.newHttpClient();
+//        this.httpClient = HttpClient.newHttpClient();
         this.jsonHandler = new JsonHandler();
         this.exceptionHandler = new ExceptionHandler(jsonHandler);
     }
@@ -41,7 +41,11 @@ public class DefaultServiceHandler implements ServiceHandler {
                     .header(HTTP_ACCEPT, APPLICATION_JSON)
                     .POST(HttpRequest.BodyPublishers.ofString(this.jsonHandler.toJson(serviceInput)))
                     .build();
-            response = this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            LOGGER.info("URL: {}", url);
+            LOGGER.info("INPUT: {}", serviceInput);
+            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            LOGGER.info("STATUS CODE: {}", response.statusCode());
+            LOGGER.info("BODY: {}", response.body());            
         } catch (Exception e) {
             LOGGER.error("HTTP Exception", e);
             throw new DataAccessException(DataAccessException.HttpException, "HTTP Exception", e);

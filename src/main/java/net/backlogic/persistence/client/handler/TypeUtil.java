@@ -15,6 +15,7 @@ public class TypeUtil {
         primitiveTypes.add(Long.class);
         primitiveTypes.add(Float.class);
         primitiveTypes.add(Double.class);
+        primitiveTypes.add(String.class);
         primitiveTypes.add(java.sql.Date.class);
         primitiveTypes.add(java.util.Date.class);
         primitiveTypes.add(java.util.Calendar.class);
@@ -26,5 +27,6 @@ public class TypeUtil {
     public static boolean isPrimitive(Class<?> type) {
         return type.isPrimitive() || primitiveTypes.contains(type);
     }
+
 
 }

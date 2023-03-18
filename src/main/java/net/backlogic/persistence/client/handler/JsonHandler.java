@@ -9,6 +9,7 @@ import net.backlogic.persistence.client.DataAccessException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -94,7 +95,7 @@ public class JsonHandler {
      */
     public List<?> toList(String jsonString, Class<?> elementType) {
         List<?> list = null;
-        JavaType objectCollection = mapper.getTypeFactory().constructCollectionType(List.class, elementType);
+        JavaType objectCollection = mapper.getTypeFactory().constructCollectionType(LinkedList.class, elementType);
         try {
             list = mapper.readValue(jsonString, objectCollection);
         } catch (JsonParseException e) {
@@ -127,14 +128,19 @@ public class JsonHandler {
     }
 
     public Object readValue(String jsonString) {
-        Map<String, Object> map;
+    	// check string
+    	if ( jsonString == null || jsonString.equals("")) {
+    		return null;
+    	}
+    	
         // parse json string
+        Map<String, Object> map;
         try {
-            TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
-            map = mapper.readValue(jsonString, typeRef);
+            map = mapper.readValue(jsonString, Map.class);
         } catch (JsonProcessingException e) {
             throw new DataAccessException(DataAccessException.JsonException, "JsonProcessingException", e);
         }
+        
         // find value
         Object value = null;
         if (map.isEmpty()) {
@@ -146,6 +152,7 @@ public class JsonHandler {
         } else {
             throw new DataAccessException(DataAccessException.JsonException, "Multiple fields in service output: " + jsonString);
         }
+        
         return value;
     }
 
