@@ -3,61 +3,45 @@
  */
 package net.backlogic.persistence.client.proxy;
 
-import net.backlogic.persistence.client.handler.ReturnType;
-import net.backlogic.persistence.client.handler.ServiceHandler;
-import net.backlogic.persistence.client.handler.TypeUtil;
-
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import net.backlogic.persistence.client.handler.ServiceHandler;
+import net.backlogic.persistence.client.handler.TypeUtil;
 
 /**
  * Proxy Strategy:
  * One proxy per persistence interface. Thus proxy is shared across threads, and should not contain private property.
  */
-public abstract class PersistenceProxy implements InvocationHandler {
-    //http handler
-    ServiceHandler serviceHandler;
+public class PersistenceProxy implements InvocationHandler {
+    private ServiceHandler serviceHandler;
+    private Map<String, ServiceMethod> serviceMap;
 
     /*
      * Constructor
      */
-    public PersistenceProxy(ServiceHandler serviceHandler) {
+    public PersistenceProxy(ServiceHandler serviceHandler, Map<String, ServiceMethod> serviceMap) {
         this.serviceHandler = serviceHandler;
+        this.serviceMap = serviceMap;
     }
 
     @Override
     public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
         try {
+        	// service method
+        	ServiceMethod sm = this.serviceMap.get(m.getName());
+        	
             // input
             Object input = getInput(m, args);
 
-            //service url
-            String serviceUrl = getServiceUrl(m);
-
-            // output type  TODO: validate supported return types  getGenericReturnType(), getReturnType()
-            ReturnType outputType;
-            Class<?> elementType;
-            Class<?> returnType = m.getReturnType();
-            Type genericReturnType = m.getGenericReturnType();
-            if (returnType.getName() == "void") {
-                outputType = ReturnType.VOID;
-                elementType = Void.class;
-            } else if (returnType == List.class && genericReturnType instanceof ParameterizedType) {
-                outputType = ReturnType.LIST;
-                elementType = (Class<?>) ((ParameterizedType) genericReturnType).getActualTypeArguments()[0];
-            } else if (TypeUtil.isPrimitive(returnType)) {
-                outputType = ReturnType.VALUE;
-                elementType = returnType;
-            } else {
-                outputType = ReturnType.OBJECT;
-                elementType = returnType;
-            }
-
             // invoke service
-            Object output = this.serviceHandler.invoke(serviceUrl, input, outputType, elementType);
+            Object output = this.serviceHandler.invoke(sm.getServiceUrl(), input, sm.getReturnType(), sm.getElementType());
 
             //return
             return output;
@@ -65,8 +49,6 @@ public abstract class PersistenceProxy implements InvocationHandler {
             throw e;
         }
     }
-
-    abstract protected String getServiceUrl(Method m);
 
     protected Object getInput(Method method, Object[] args) {
         //get method parameters
