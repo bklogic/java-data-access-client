@@ -54,6 +54,9 @@ public class JsonHandler {
     }
 
     public Object toReturnType (String jsonString, ReturnType returnType, Class<?> elementType) {
+    	if (jsonString.startsWith("[")) {
+    		returnType = ReturnType.LIST;
+    	}
         switch (returnType) {
             case LIST:
                 return this.toList(jsonString, elementType);

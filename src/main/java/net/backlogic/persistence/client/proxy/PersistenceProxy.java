@@ -10,8 +10,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import net.backlogic.persistence.client.handler.ReturnType;
 import net.backlogic.persistence.client.handler.ServiceHandler;
 import net.backlogic.persistence.client.handler.TypeUtil;
 
@@ -43,6 +45,17 @@ public class PersistenceProxy implements InvocationHandler {
             // invoke service
             Object output = this.serviceHandler.invoke(sm.getServiceUrl(), input, sm.getReturnType(), sm.getElementType());
 
+            // convert list to instance, for ReadById
+            if (output instanceof List && sm.getReturnType() == ReturnType.OBJECT) {
+            	@SuppressWarnings("unchecked")
+				List<Object> list = (List<Object>) output;
+            	if ( list.size() > 0 ) {
+            		output = list.get(0);
+            	} else {
+            		output = null;
+            	}
+            }
+            
             //return
             return output;
         } catch (Exception e) {
@@ -50,7 +63,7 @@ public class PersistenceProxy implements InvocationHandler {
         }
     }
 
-    protected Object getInput(Method method, Object[] args) {
+    private Object getInput(Method method, Object[] args) {
         //get method parameters
         Parameter[] params = method.getParameters();
 
