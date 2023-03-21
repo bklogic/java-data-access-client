@@ -2,6 +2,7 @@ package net.backlogic.persistence.client.handler;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class MockServiceHandler implements ServiceHandler {
 	private String baseUrl;
@@ -33,6 +34,10 @@ public class MockServiceHandler implements ServiceHandler {
 
 		// return output
 		return this.outputStore.get(url);
+	}
+
+	@Override
+	public void setJwtProvider(Supplier<String> jwtProvider) {
 	}
 
 }
