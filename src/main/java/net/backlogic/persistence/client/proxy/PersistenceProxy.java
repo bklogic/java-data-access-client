@@ -63,7 +63,7 @@ public class PersistenceProxy implements InvocationHandler {
         }
     }
 
-    private Object getInput(Method method, Object[] args) {
+    protected Object getInput(Method method, Object[] args) {
         //get method parameters
         Parameter[] params = method.getParameters();
 

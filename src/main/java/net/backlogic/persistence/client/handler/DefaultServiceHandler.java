@@ -16,14 +16,12 @@ public class DefaultServiceHandler implements ServiceHandler {
     private static String APPLICATION_JSON = "application/json";
     private String baseUrl;
 
-    private HttpClient httpClient;
     private JsonHandler jsonHandler;
     private ExceptionHandler exceptionHandler;
 
-    public DefaultServiceHandler(String baseUrl) {
+    public DefaultServiceHandler(String baseUrl, JsonHandler jsonHandler) {
         this.baseUrl = baseUrl;
-//        this.httpClient = HttpClient.newHttpClient();
-        this.jsonHandler = new JsonHandler();
+        this.jsonHandler = jsonHandler;
         this.exceptionHandler = new ExceptionHandler(jsonHandler);
     }
 
@@ -42,7 +40,7 @@ public class DefaultServiceHandler implements ServiceHandler {
                     .POST(HttpRequest.BodyPublishers.ofString(this.jsonHandler.toJson(serviceInput)))
                     .build();
             LOGGER.info("URL: {}", url);
-            LOGGER.info("INPUT: {}", serviceInput);
+            LOGGER.info("INPUT: {}", jsonHandler.toJson(serviceInput));
             response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
             LOGGER.info("STATUS CODE: {}", response.statusCode());
             LOGGER.info("BODY: {}", response.body());            

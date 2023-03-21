@@ -64,6 +64,8 @@ public class JsonHandler {
                 return this.toObject(jsonString, elementType);
             case VALUE:
                 return this.readValue(jsonString);
+            case MAP:
+                return this.toMap(jsonString);
             default:
                 return null;
         }
@@ -163,5 +165,17 @@ public class JsonHandler {
         
         return value;
     }
-
+ 
+    public Object toMap(String jsonString) {
+        Map<String, Object> map;
+        try {
+            map = mapper.readValue(jsonString, Map.class);
+        } catch (JsonProcessingException e) {
+            throw new DataAccessException(DataAccessException.JsonException, "JsonProcessingException", e);
+        }
+        return map;
+    }
+    
 }
+
+

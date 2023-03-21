@@ -1,5 +1,5 @@
 # BackLogic Java Persistence Client
-A Java client to work with BackLogic Persistence Platform to stremeline application persistecne programming, inspired by Spring Boot Data Repository patterns.
+A Java client to work with BackLogic Persistence Platform to streamline application persistence programming, inspired by Spring Boot Data Repository patterns.
 
 
 
@@ -69,12 +69,44 @@ public interface RepositoryInterface<O, I> {
 
 ### Batch Interface
 
+Example:
+
 ```java
-@BatchService
-public interface BatchInterface extends Batch, QueryInterface {
-    
+@RepositoryInterface("/repository/customer")
+public interface CustomerRepository {
+	@Create
+	Customer create(Customer customer)
+}
+
+@RepositoryInterface("/repository/order")
+public interface OrderRepository {
+	@Create
+	Order create(Order order)
+}
+
+
+@BatchService("repository")
+public interface MyBatch extends Batch {
+
+	@BatchItem("customer/create")
+	public void createCustomer(Customer customer)
+
+	@BatchItem("order/create")
+	public void createOrder(Order order)
 }
 ```
+
+```java
+DataAccessClient client = new DataAccessClient(baseUrl);
+MyBatch myBatch = client.getBatch(MyBatch.class);
+
+myBatch.createCustomer(customer);
+myBatch.createOrder(order);
+Object[] output = myBatch.run()
+Customer customer = (Cusomer) output[0]
+Order order = (Order) output[1]
+```
+
 
 ## Road Map
 
@@ -86,7 +118,7 @@ public interface BatchInterface extends Batch, QueryInterface {
 
 basic:
 - command, query, repository
-- synchonous
+- synchronous
 - 
 
 

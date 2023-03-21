@@ -4,9 +4,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Annotate a Delete method of a Repository interface.
+ * Annotate a Batch interface.
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Delete {
+public @interface BatchService {
     String value() default "";
 }
