@@ -33,5 +33,14 @@ public class UrlUtil {
         }
         return url;
     }
+    
+    
+    public static String formatBaseUrl(String baseUrl) {
+    	String url = baseUrl;
+		if (!baseUrl.endsWith("/")) {
+			url = baseUrl + "/";
+		} 
+    	return url;
+    }
 
 }

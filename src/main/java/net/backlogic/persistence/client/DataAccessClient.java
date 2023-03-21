@@ -36,6 +36,10 @@ public class DataAccessClient {
         this.proxyFactory = new ProxyFactory(serviceHandler);
         this.proxyCache = new HashMap<Class<?>, Object>();
     }
+    
+    public static DataAccessClientBuilder builder() {
+    	return new DataAccessClientBuilder();
+    }
 
     /**
      * Get a proxy object for a query interface type
