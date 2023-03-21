@@ -2,12 +2,9 @@ package net.backlogic.persistence.client;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
-import net.backlogic.persistence.client.annotation.CommandService;
-import net.backlogic.persistence.client.annotation.QueryService;
-import net.backlogic.persistence.client.annotation.RepositoryService;
 import net.backlogic.persistence.client.handler.ServiceHandler;
-import net.backlogic.persistence.client.proxy.PersistenceProxy;
 import net.backlogic.persistence.client.proxy.ProxyFactory;
 
 
@@ -40,6 +37,10 @@ public class DataAccessClient {
     public static DataAccessClientBuilder builder() {
     	return new DataAccessClientBuilder();
     }
+    
+    public void setJwtProvider(Supplier<String> jwtProvider) {
+    	this.proxyFactory.setJwtProvider(jwtProvider);
+    }    
 
     /**
      * Get a proxy object for a query interface type
@@ -94,19 +95,5 @@ public class DataAccessClient {
         return proxy;    	
     }
 
-    
-    private Object createProxy(Class<?> interfaceType) {
-    	Object proxy;
-        if ( interfaceType.getAnnotation(QueryService.class) != null ) {
-        	proxy =  proxyFactory.createQuery(interfaceType);
-        } else if (interfaceType.getAnnotation(CommandService.class) != null) {
-        	proxy =  proxyFactory.createCommand(interfaceType);        	
-	    } else if (interfaceType.getAnnotation(RepositoryService.class) != null) {
-	    	proxy =  proxyFactory.createRepository(interfaceType);        	
-	    } else {
-	    	throw new DataAccessException("InvalidAccessInterface", "Invalid data access interface: " + interfaceType.getName());
-	    }
-        return proxy;
-    }
 
 }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import net.backlogic.persistence.client.DataAccessException;
 import net.backlogic.persistence.client.annotation.BatchService;
@@ -38,6 +39,10 @@ public class ProxyFactory {
         this.jsonHandler = new JsonHandler();
         this.serviceHandler = new DefaultServiceHandler(baseUrl, this.jsonHandler);
         init();
+    }
+    
+    public void setJwtProvider(Supplier<String> jwtProvider) {
+    	this.serviceHandler.setJwtProvider(jwtProvider);
     }
 
     /*

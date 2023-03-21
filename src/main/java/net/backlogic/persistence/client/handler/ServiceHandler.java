@@ -3,11 +3,14 @@
  */
 package net.backlogic.persistence.client.handler;
 
+import java.util.function.Supplier;
+
 /**
- * Responsible for handle HTTP service request. Interface is for convenience of Mock Test.
+ * Responsible for handle HTTP service request.
  */
-@FunctionalInterface
 public interface ServiceHandler {
+	
     public Object invoke(String serviceUrl, Object serviceInput, ReturnType returnType, Class<?> elementType);
 
+    public void setJwtProvider(Supplier<String> jwtProvider);
 }
