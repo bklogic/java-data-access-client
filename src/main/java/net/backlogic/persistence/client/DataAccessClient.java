@@ -48,8 +48,9 @@ public class DataAccessClient {
      * @param queryType the interface type
      * @return return a proxy for given interface type. Return null if not exists.
      */
-    public Object getQuery(Class<?> queryType) {
-        Object proxy = proxyCache.get(queryType);
+    public <T> T getQuery(Class<T> queryType) {
+        @SuppressWarnings("unchecked")
+		T proxy = (T) proxyCache.get(queryType);
         if (proxy == null) {
             proxy = proxyFactory.createQuery(queryType);
             this.proxyCache.put(queryType, proxy);
@@ -64,8 +65,9 @@ public class DataAccessClient {
      * @param commandType the interface type
      * @return return a proxy for given interface type. Return null if not exists.
      */
-    public Object getCommand(Class<?> commandType) {
-        Object proxy = proxyCache.get(commandType);
+    public <T> T getCommand(Class<T> commandType) {
+        @SuppressWarnings("unchecked")
+		T proxy = (T) proxyCache.get(commandType);
         if (proxy == null) {
             proxy = proxyFactory.createCommand(commandType);
             this.proxyCache.put(commandType, proxy);
@@ -79,8 +81,9 @@ public class DataAccessClient {
      * @param repositoryType the interface type
      * @return return a proxy for given interface type. Return null if not exists.
      */
-    public Object getRepository(Class<?> repositoryType) {
-        Object proxy = proxyCache.get(repositoryType);
+    public <T> T getRepository(Class<T> repositoryType) {
+        @SuppressWarnings("unchecked")
+		T proxy = (T) proxyCache.get(repositoryType);
         if (proxy == null) {
             proxy = proxyFactory.createRepository(repositoryType);
             this.proxyCache.put(repositoryType, proxy);
@@ -89,11 +92,10 @@ public class DataAccessClient {
     }
 
 
-    public Object getBatch(Class<?> batchType) {
+    public <T> T getBatch(Class<T> batchType) {
 		// create proxy
-		Object proxy = proxyFactory.createBatch(batchType);
+		T proxy = proxyFactory.createBatch(batchType);
         return proxy;    	
     }
-
 
 }

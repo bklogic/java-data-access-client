@@ -62,7 +62,7 @@ public class ProxyFactory {
         this.finderMap.put(BatchService.class, new BatchServiceMethodFinder());    	
     }
     
-    public Object createRepository(Class<?> repositoryType) {
+    public <T> T createRepository(Class<T> repositoryType) {
         //validate repository interface
         RepositoryService repositoryAnnotation = repositoryType.getAnnotation(RepositoryService.class);
         if (repositoryAnnotation == null) {
@@ -76,7 +76,8 @@ public class ProxyFactory {
         Map<String, ServiceMethod> serviceMap = buildServiceMap(interfaceUrl, repositoryType.getMethods(), finder, T);
         
         //instantiate repository interface proxy
-        Object proxy = Proxy.newProxyInstance(
+        @SuppressWarnings("unchecked")
+		T proxy = (T) Proxy.newProxyInstance(
                 repositoryType.getClassLoader(), new Class[]{repositoryType}, new PersistenceProxy(serviceHandler, serviceMap)
         );
 
@@ -84,7 +85,7 @@ public class ProxyFactory {
     }
 
 
-    public Object createQuery(Class<?> queryType) {
+    public <T> T createQuery(Class<T> queryType) {
         //validate repository interface
         QueryService queryAnnotation = queryType.getAnnotation(QueryService.class);
         if (queryAnnotation == null) {
@@ -97,14 +98,15 @@ public class ProxyFactory {
         Map<String, ServiceMethod> serviceMap = buildServiceMap(interfaceUrl, queryType.getMethods(), finder);
         
         // instantiate query interface proxy
-        Object proxy = Proxy.newProxyInstance(
+        @SuppressWarnings("unchecked")
+		T proxy = (T) Proxy.newProxyInstance(
                 queryType.getClassLoader(), new Class[]{queryType}, new PersistenceProxy(serviceHandler, serviceMap)
         );
 
         return proxy;
     }
 
-    public Object createCommand(Class<?> commandType) {
+    public <T> T createCommand(Class<T> commandType) {
         // validate repository interface
         CommandService persistAnnotation = commandType.getAnnotation(CommandService.class);
         if (persistAnnotation == null) {
@@ -117,7 +119,8 @@ public class ProxyFactory {
         Map<String, ServiceMethod> serviceMap = buildServiceMap(interfaceUrl, commandType.getMethods(), finder);
         
         //instantiate command interface proxy
-        Object proxy = Proxy.newProxyInstance(
+        @SuppressWarnings("unchecked")
+		T proxy = (T) Proxy.newProxyInstance(
                 commandType.getClassLoader(), new Class[]{commandType}, new PersistenceProxy(serviceHandler, serviceMap)
         );
 
@@ -125,7 +128,7 @@ public class ProxyFactory {
     }
 
     
-    public Object createBatch(Class<?> batchType) {
+    public <T> T createBatch(Class<T> batchType) {
         // validate repository interface
         BatchService persistAnnotation = batchType.getAnnotation(BatchService.class);
         if (persistAnnotation == null) {
@@ -139,7 +142,8 @@ public class ProxyFactory {
         Map<String, ServiceMethod> serviceMap = buildServiceMap(null, batchType.getMethods(), finder);
         
         //instantiate command interface proxy
-        Object proxy = Proxy.newProxyInstance(
+        @SuppressWarnings("unchecked")
+		T proxy = (T) Proxy.newProxyInstance(
         		batchType.getClassLoader(), new Class[]{batchType}, new BatchProxy(serviceHandler, jsonHandler, serviceMap, batchServiceUrl)
         );
 
