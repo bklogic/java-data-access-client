@@ -1,124 +1,95 @@
-# BackLogic Java Persistence Client
-A Java client to work with BackLogic Persistence Platform to streamline application persistence programming, inspired by Spring Boot Data Repository patterns.
+# Java Data Access Client
 
+A Java client for data access services. It follows the familiar data access object (DAO) and repository design patterns, except here the user writes the annotated DAO and repository interface, but the data access client provides an implementation behind the scene and invokes the remote data access service when any of the interface methods is called.  
 
+To understand data access services, please take a look at:
+[Data Access Service Documentation](https://docs.backlogic.net/#/DataAccessService)
 
-## Requirements:
+To get started with this Java client, please read on.
 
-- Jackson for JSON
-- Spring WebClient for HTTP
-- Support for synchronous and reactive interface
-- Type of Interfaces: query, command, repository, and batch
+## Get Started
 
-## Annotations
+### Maven Dependency
 
-### Query Service
+```xml
+	<dependency>
+		  <groupId>net.backlogic.persistence</groupId>
+		  <artifactId>data-access-client</artifactId>
+		  <version>0.0.1</version>
+	</dependency>
+``` 
+
+### Get Data Access Client
+
+```json
+DataAccessClient client = DataAccessClient.builder()
+	.baseUrl("https://try4.devtime.tryprod.backlogic.net/service/try4/example")
+	.build();
+```
+
+### Query Interface
 
 ```java
-@QueryService
-public interface QueryInterface<O, I...> {
-    @Query
-    public O queryMethod(I input ...);
+@QueryService("myQueries")
+public interface MyQuery {
+	@Query("getCustomers")
+	public List<Customer> getCustomersByCity(String city);
 }
 ```
 
-### Command
+### Command Interface
 
-```java
-@CommandService
-public interface CommandInterface<O, I...> {
-    @Command
-    public O commandMethod(I input, ...);
+``` java
+@CommandService("myCommands")
+public interface MyCommand {
+	@Command("removeCustomer")
+	public void removeCustomer(Integer customerNumber);
 }
 ```
 
-O could be void.
+### Repository Interface
 
-### Repository Service
-
-```java
-@RepositoryService
-public interface RepositoryInterface<O, I> {
-    
-    @Read
-    public O readMethod(I input);
-
-    @Read
-    public List<O> readMethod(I input);
-    
-    @Create
-    public O create(O o);
-
-    @Update
-    public O update(O o);
-
-    @Save
-    public O save(O o);
-
-    @Merge
-    public O merge(O o);
-
-    @Delete
-    public O delete(O o);
-
-    @Delete
-    public O deleteByKey(K k);
-
-}
-```
-
-### Batch Interface
-
-Example:
-
-```java
-@RepositoryInterface("/repository/customer")
+``` java
+@RepositoryService("myRepositories/Customer")
 public interface CustomerRepository {
 	@Create
-	Customer create(Customer customer)
+	public Customer create(Customer customer);
+	@Update
+	public Customer update(Customer customer);
+	@Delete
+	public Customer delete(Customer customer);
+	@Read
+	public Customer getById(Integer customerNumber);
 }
 
-@RepositoryInterface("/repository/order")
-public interface OrderRepository {
-	@Create
-	Order create(Order order)
-}
-
-
-@BatchService("repository")
-public interface MyBatch extends Batch {
-
-	@BatchItem("customer/create")
-	public void createCustomer(Customer customer)
-
-	@BatchItem("order/create")
-	public void createOrder(Order order)
-}
 ```
+
+### Data Access Calls
 
 ```java
-DataAccessClient client = new DataAccessClient(baseUrl);
-MyBatch myBatch = client.getBatch(MyBatch.class);
+// query
+MyQuery myQuery = client.getQuery(MyQuery.class);
+List<Customer> customers = myQuery.getCustomersByCity("Los Angeles")
 
-myBatch.createCustomer(customer);
-myBatch.createOrder(order);
-Object[] output = myBatch.run()
-Customer customer = (Cusomer) output[0]
-Order order = (Order) output[1]
+// command
+MCommand myCommand = client.getCommand(MCommand.class);
+myQuery.removeCustomer(123);
+
+// repository
+Customer customer = new Customer();
+CustomerRepository repository = client.getRepository(CustomerRepository.class);
+customer = repository.create(customer)
+
 ```
 
+## User Guide
 
-## Road Map
+For more details, please read:
+[Java Data Access Client User Guide]()
 
-| Item | Phase 1 | Phase 2 | Phase 3 |
-| --- | --- | --- |-------|
-| basic | Y |
-| batch interface | | Y |
-| reactive |  | | Y      |
+## Spring Boot
 
-basic:
-- command, query, repository
-- synchronous
-- 
+For Spring Boot users, we have a Spring Boot starter here:
+[Data Access Spring Boot Starter](https://github.com/bklogic/backlogic-spring-boot-starter)
 
 

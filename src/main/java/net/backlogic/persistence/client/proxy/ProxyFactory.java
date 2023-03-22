@@ -253,28 +253,27 @@ public class ProxyFactory {
         	} else if (Collection.class.isAssignableFrom(paramType)) {
         		// collection 
             	inputType = InputType.SINGLE;
-//        		Type type = method.getGenericParameterTypes()[0];
-//        		if (type instanceof ParameterizedType) {
-//        			Class<?> elementType;
-//        	        if (T == null) {
-//            	        elementType = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];    	        	    	        	
-//        	        } else {
-//        	        	elementType = T;
-//        	        }        			
-//        	        
-////                    Class<?> elementType = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
-//        	        
-//                    if (TypeUtil.isPrimitive(elementType)) {
-//                    	// collection of primitive
-//                    	inputType = InputType.MAP;
-//                    } else {
-//                    	// collection of objects
-//                    	inputType = InputType.SINGLE;
-//                    }
-//        		} else {
-//        			// not parameterized.  maybe should throw exception here?	
-//                	inputType = InputType.SINGLE;
-//        		}
+        		Type type = method.getGenericParameterTypes()[0];
+        		if (type instanceof ParameterizedType) {
+        			// element type
+        			Class<?> elementType;
+        	        if (T == null) {
+            	        elementType = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];    	        	    	        	
+        	        } else {
+        	        	elementType = T;
+        	        }    
+        	        // input type
+                    if (TypeUtil.isPrimitive(elementType)) {
+                    	// collection of primitive
+                    	inputType = InputType.MAP;
+                    } else {
+                    	// collection of objects
+                    	inputType = InputType.SINGLE;
+                    }
+        		} else {
+        			// not parameterized.  maybe should throw exception here?	
+                	inputType = InputType.SINGLE;
+        		}
         	} else {
 	        	// single object
             	inputType = InputType.SINGLE;
