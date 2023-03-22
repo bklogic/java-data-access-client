@@ -46,12 +46,13 @@ public class BatchProxy extends PersistenceProxy {
 		} 
 		
 		// add invocation
-		ServiceMethod serviceMethod = this.serviceMap.get(method.getName());
+	    String methodKey = MethodUtil.createMethodKey(method);
+		ServiceMethod serviceMethod = this.serviceMap.get(methodKey);
 		if (serviceMethod == null) {
 			throw new DataAccessException("InvalidMethod", "Invalid data access method: " + method.getName());
 		}
-        Object serviceInput = getInput(method, args);
-        BatchedInvocation invocation = new BatchedInvocation(method.getName(), serviceMethod.getServiceUrl(), serviceInput);
+        Object serviceInput = getInput(serviceMethod, args);
+        BatchedInvocation invocation = new BatchedInvocation(methodKey, serviceMethod.getServiceUrl(), serviceInput);
         this.invocations.add(invocation);
 		
 		return null;
@@ -71,15 +72,19 @@ public class BatchProxy extends PersistenceProxy {
 			Object output;
 			// get output
 			BatchedInvocation invocation = invocations.get(i);
-			output = outputMap.get(invocation.getName());
-			
-			// to json string
-			String jsonString = this.jsonHandler.toJson(output);
-			
-			// to return type
 			ServiceMethod sm = this.serviceMap.get(invocation.getName());
-			output = this.jsonHandler.toReturnType(jsonString, sm.getReturnType(), sm.getElementType());
-			outputs[i] = output;		
+			
+			output = outputMap.get(invocation.getName());			
+			if (output != null) {
+				// to json string
+				String jsonString = this.jsonHandler.toJson(output);
+				
+				// to return type
+				output = this.jsonHandler.toReturnType(jsonString, sm.getReturnType(), sm.getElementType());
+			} else if (sm.getReturnType() == ReturnType.LIST) {
+				output = new ArrayList<>();
+			}
+			outputs[i] = output;						
 		}
 		
 		return outputs;

@@ -37,10 +37,11 @@ public class PersistenceProxy implements InvocationHandler {
     public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
         try {
         	// service method
-        	ServiceMethod sm = this.serviceMap.get(m.getName());
+    	    String methodKey = MethodUtil.createMethodKey(m);
+        	ServiceMethod sm = this.serviceMap.get(methodKey);
         	
             // input
-            Object input = getInput(m, args);
+            Object input = this.getInput(sm, args);
 
             // invoke service
             Object output = this.serviceHandler.invoke(sm.getServiceUrl(), input, sm.getReturnType(), sm.getElementType());
@@ -63,43 +64,19 @@ public class PersistenceProxy implements InvocationHandler {
         }
     }
 
-    protected Object getInput(Method method, Object[] args) {
-        //get method parameters
-        Parameter[] params = method.getParameters();
 
-        // construct input
+    protected Object getInput(ServiceMethod sm, Object[] args) {
         Object input;
-        if (params.length == 0) { 
-        	// no parameter
-            input = null;
-        } else if (params.length == 1) { 
-        	Class<?> paramType = method.getParameterTypes()[0];
-        	if ( TypeUtil.isPrimitive(paramType) ) {
-                input = this.createInputMap(params, args);        		
-        	} else if (Collection.class.isAssignableFrom(paramType)) {
-        		// collection 
-        		Type type = method.getGenericParameterTypes()[0];
-        		if (type instanceof ParameterizedType) {
-                    Class<?> elementType = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
-                    if (TypeUtil.isPrimitive(elementType)) {
-                    	// collection of primitive
-                    	input = this.createInputMap(params, args);
-                    } else {
-                    	// collection of objects
-                    	input = args[0];
-                    }
-        		} else {
-        			// not parameterized.  maybe should throw exception here?	
-                	input = args[0]; 		
-        		}
-        	} else {
-	        	// single object
-	            input = args[0];
-	        }
-        } else {
-            return this.createInputMap(params, args);
+        switch (sm.getInputType()) {
+        	case MAP:
+        		input = this.createInputMap(sm.getInputParams(), args);
+        		break;
+        	case SINGLE:
+        		input = args[0];
+        		break;
+        	default:
+        		input = null;
         }
-        
         return input;
     }
     

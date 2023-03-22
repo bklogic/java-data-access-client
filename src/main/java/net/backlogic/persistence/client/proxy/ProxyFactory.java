@@ -1,10 +1,12 @@
 package net.backlogic.persistence.client.proxy;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,7 @@ import net.backlogic.persistence.client.annotation.CommandService;
 import net.backlogic.persistence.client.annotation.QueryService;
 import net.backlogic.persistence.client.annotation.RepositoryService;
 import net.backlogic.persistence.client.handler.DefaultServiceHandler;
+import net.backlogic.persistence.client.handler.InputType;
 import net.backlogic.persistence.client.handler.JsonHandler;
 import net.backlogic.persistence.client.handler.ReturnType;
 import net.backlogic.persistence.client.handler.ServiceHandler;
@@ -200,9 +203,13 @@ public class ProxyFactory {
     	        }
     	    }
     	    
+    	    // input type
+    	    InputType inputType = this.getInputType(method, T);
+    	    
     		// service method
-    	    ServiceMethod serviceMethod = new ServiceMethod(serviceUrl, outputType, elementType);
-    	    map.put(method.getName(), serviceMethod);
+    	    String methodKey = MethodUtil.createMethodKey(method);
+    	    ServiceMethod serviceMethod = new ServiceMethod(serviceUrl, outputType, elementType, inputType, method.getParameters());
+    	    map.put(methodKey, serviceMethod);
     	}
     	
     	return map;
@@ -230,4 +237,53 @@ public class ProxyFactory {
     	return T;
     }
     
+
+    private InputType getInputType(Method method, Class<?> T) {
+        //get method parameters
+        Parameter[] params = method.getParameters();
+
+        // construct input
+        InputType inputType;
+        if (params.length == 0) { 
+        	inputType = InputType.NONE;
+        } else if (params.length == 1) { 
+        	Class<?> paramType = method.getParameterTypes()[0];
+        	if ( TypeUtil.isPrimitive(paramType) ) {
+            	inputType = InputType.MAP;
+        	} else if (Collection.class.isAssignableFrom(paramType)) {
+        		// collection 
+            	inputType = InputType.SINGLE;
+//        		Type type = method.getGenericParameterTypes()[0];
+//        		if (type instanceof ParameterizedType) {
+//        			Class<?> elementType;
+//        	        if (T == null) {
+//            	        elementType = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];    	        	    	        	
+//        	        } else {
+//        	        	elementType = T;
+//        	        }        			
+//        	        
+////                    Class<?> elementType = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
+//        	        
+//                    if (TypeUtil.isPrimitive(elementType)) {
+//                    	// collection of primitive
+//                    	inputType = InputType.MAP;
+//                    } else {
+//                    	// collection of objects
+//                    	inputType = InputType.SINGLE;
+//                    }
+//        		} else {
+//        			// not parameterized.  maybe should throw exception here?	
+//                	inputType = InputType.SINGLE;
+//        		}
+        	} else {
+	        	// single object
+            	inputType = InputType.SINGLE;
+	        }
+        } else {
+        	inputType = InputType.MAP;
+        }
+        
+        return inputType;
+    }    
+        
 }
