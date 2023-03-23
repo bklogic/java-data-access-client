@@ -4,9 +4,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Method annotation for Command interface. A mechanism to code service url.
+ * Annotate a command method and map it a command service.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Command {
-    String value();
+	String value();
 }

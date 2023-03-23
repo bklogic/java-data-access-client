@@ -4,9 +4,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Method annotation for Query and Command interface. A mechanism to code service url.
+ * Annotate a query method and map it a query service.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Query {
-    String value();
+	String value();
 }

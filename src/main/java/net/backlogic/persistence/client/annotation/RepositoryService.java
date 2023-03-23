@@ -7,13 +7,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Annotate a Repository interface. Url should points to a CRUD service. Type indicates type of the aggregate root object.
+ * Annotate a Repository interface with one more @Read, @Create, @Update, @Delete, @Save, and @Merge methods, and map it a repository service.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RepositoryService {
     String value() default "";
-
-    String url() default "";
-
-    String type() default "";
 }

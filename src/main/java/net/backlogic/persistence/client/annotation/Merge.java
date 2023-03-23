@@ -4,7 +4,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Annotate a Save method of a Repository interface.
+ * Annotate a merge method and map it to the merge operation of a repository
+ * service.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Merge {

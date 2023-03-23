@@ -4,9 +4,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Annotate a Query interface. Value is a partial service url.
+ * Annotate a Query interface with one or more @Query methods.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface QueryService {
-    String value() default "";
+	String value() default "";
 }
