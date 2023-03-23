@@ -28,13 +28,7 @@ public interface GenericRepository<T> {
 	
 	@Delete
 	public void delete(List<T> objects);
-	
-//	@Delete
-//	public void deleteById(ID id);
-//	
-//	@Delete
-//	public void deleteById(List<ID> ids);
-	
+		
 	@Save
 	public T save(T object);
 	
@@ -49,8 +43,4 @@ public interface GenericRepository<T> {
 	
 	@Read
 	public List<T> getAll();
-	
-//	@Read
-//	public T getById(ID id);
-	
 }
