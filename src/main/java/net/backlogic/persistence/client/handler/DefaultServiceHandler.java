@@ -62,10 +62,13 @@ public class DefaultServiceHandler implements ServiceHandler {
                 LOGGER.info("URL: {}", url);
                 LOGGER.info("INPUT: {}", jsonHandler.toJson(serviceInput));            	
             }
+    		long startTime = System.currentTimeMillis();
             response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+    		long endTime = System.currentTimeMillis();
             if (this.logRequest) {
                 LOGGER.info("STATUS CODE: {}", response.statusCode());
-                LOGGER.info("BODY: {}", response.body());                        	
+                LOGGER.info("BODY: {}", response.body());   
+                LOGGER.info("ELAPSED TIME: {} ms", endTime-startTime);
             }
         } catch (Exception e) {
             LOGGER.error("HTTP Exception", e);
