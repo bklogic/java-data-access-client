@@ -21,6 +21,7 @@ public class DefaultServiceHandler implements ServiceHandler {
     Logger LOGGER = LoggerFactory.getLogger(DefaultServiceHandler.class);
     
     private String baseUrl;
+    private boolean logRequest = false;
 
     private JsonHandler jsonHandler;
     private ExceptionHandler exceptionHandler;
@@ -36,8 +37,12 @@ public class DefaultServiceHandler implements ServiceHandler {
     public void setJwtProvider(Supplier<String> jwtProvider) {
     	this.jwtProvider = jwtProvider;
     }
-    
-    
+
+	@Override
+	public void logRequest(boolean logRequest) {
+		this.logRequest = logRequest;
+	}
+
     @Override
     public Object invoke(String serviceUrl, Object serviceInput, ReturnType returnType, Class<?> elementType) {
         // url
@@ -53,11 +58,15 @@ public class DefaultServiceHandler implements ServiceHandler {
                     .header(AUTHORIZATION, BEARER + this.jwtProvider.get())
                     .POST(HttpRequest.BodyPublishers.ofString(this.jsonHandler.toJson(serviceInput)))
                     .build();
-            LOGGER.info("URL: {}", url);
-            LOGGER.info("INPUT: {}", jsonHandler.toJson(serviceInput));
+            if (this.logRequest) {
+                LOGGER.info("URL: {}", url);
+                LOGGER.info("INPUT: {}", jsonHandler.toJson(serviceInput));            	
+            }
             response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-            LOGGER.info("STATUS CODE: {}", response.statusCode());
-            LOGGER.info("BODY: {}", response.body());            
+            if (this.logRequest) {
+                LOGGER.info("STATUS CODE: {}", response.statusCode());
+                LOGGER.info("BODY: {}", response.body());                        	
+            }
         } catch (Exception e) {
             LOGGER.error("HTTP Exception", e);
             throw new DataAccessException(DataAccessException.HttpException, "HTTP Exception", e);

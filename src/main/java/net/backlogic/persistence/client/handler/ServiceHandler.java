@@ -13,4 +13,7 @@ public interface ServiceHandler {
     public Object invoke(String serviceUrl, Object serviceInput, ReturnType returnType, Class<?> elementType);
 
     public void setJwtProvider(Supplier<String> jwtProvider);
+    
+    public void logRequest(boolean logRequest);
+    
 }

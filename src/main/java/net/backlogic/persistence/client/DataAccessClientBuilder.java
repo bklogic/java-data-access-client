@@ -10,9 +10,11 @@ public class DataAccessClientBuilder {
 	private String baseUrl;
 	private DevTimeCredential credential;
 	private Supplier<String> jwtProvider;
+	private boolean logRequest;
 	
 	public DataAccessClientBuilder() {
 		this.jwtProvider = () -> "";
+		this.logRequest = false;
 	}
 	
 	public DataAccessClientBuilder baseUrl(String baseUrl) {
@@ -32,9 +34,15 @@ public class DataAccessClientBuilder {
 		return this;
 	}
 	
+	public DataAccessClientBuilder logRequest(boolean logRequest) {
+		this.logRequest = logRequest;
+		return this;
+	}
+	
 	public DataAccessClient build() {
 		DataAccessClient client = new DataAccessClient(this.baseUrl);
 		client.setJwtProvider( (credential == null) ? this.jwtProvider : new DevTimeJwtProvider(this.credential) );
+		client.logRequest(this.logRequest);
 		return client;
 	}
 

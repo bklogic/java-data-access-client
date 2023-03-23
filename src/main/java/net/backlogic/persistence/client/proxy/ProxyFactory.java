@@ -47,6 +47,10 @@ public class ProxyFactory {
     public void setJwtProvider(Supplier<String> jwtProvider) {
     	this.serviceHandler.setJwtProvider(jwtProvider);
     }
+    
+    public void logRequest(boolean logRequest) {
+    	this.serviceHandler.logRequest(logRequest);
+    }
 
     /*
      * Construct proxy generator with mock service handler

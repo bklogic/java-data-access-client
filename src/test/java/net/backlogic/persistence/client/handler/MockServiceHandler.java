@@ -40,4 +40,8 @@ public class MockServiceHandler implements ServiceHandler {
 	public void setJwtProvider(Supplier<String> jwtProvider) {
 	}
 
+	@Override
+	public void logRequest(boolean logRequest) {
+	}
+
 }

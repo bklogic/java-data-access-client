@@ -42,6 +42,10 @@ public class DataAccessClient {
     	this.proxyFactory.setJwtProvider(jwtProvider);
     }    
 
+    public void logRequest(boolean logRequest) {
+    	this.proxyFactory.logRequest(logRequest);
+    }
+
     /**
      * Get a proxy object for a query interface type
      *
