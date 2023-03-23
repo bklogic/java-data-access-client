@@ -1,5 +1,11 @@
 package net.backlogic.persistence.client.handler;
 
+import static net.backlogic.persistence.client.handler.HTTP.APPLICATION_JSON;
+import static net.backlogic.persistence.client.handler.HTTP.AUTHORIZATION;
+import static net.backlogic.persistence.client.handler.HTTP.BEARER;
+import static net.backlogic.persistence.client.handler.HTTP.HTTP_ACCEPT;
+import static net.backlogic.persistence.client.handler.HTTP.HTTP_CONTENT_TYPE;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -13,11 +19,7 @@ import net.backlogic.persistence.client.DataAccessException;
 
 public class DefaultServiceHandler implements ServiceHandler {
     Logger LOGGER = LoggerFactory.getLogger(DefaultServiceHandler.class);
-    private static String HTTP_CONTENT_TYPE = "Content-Type";
-    private static String HTTP_ACCEPT = "Accept";
-    private static String APPLICATION_JSON = "application/json";
-    private static String AUTHORIZATION = "Authorization";
-    private static String BEARER = "Bearer ";
+    
     private String baseUrl;
 
     private JsonHandler jsonHandler;
