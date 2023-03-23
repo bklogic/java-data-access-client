@@ -68,7 +68,7 @@ public class DefaultServiceHandler implements ServiceHandler {
             if (this.logRequest) {
                 LOGGER.info("STATUS CODE: {}", response.statusCode());
                 LOGGER.info("BODY: {}", response.body());   
-                LOGGER.info("ELAPSED TIME: {} ms", endTime-startTime);
+                LOGGER.info("DURATION: {} ms", endTime-startTime);
             }
         } catch (Exception e) {
             LOGGER.error("HTTP Exception", e);
