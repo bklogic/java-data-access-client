@@ -15,7 +15,7 @@ To get started with this Java client, please read on.
 	<dependency>
 		  <groupId>net.backlogic.persistence</groupId>
 		  <artifactId>data-access-client</artifactId>
-		  <version>0.0.1</version>
+		  <version>0.0.2</version>
 	</dependency>
 ``` 
 

@@ -19,7 +19,7 @@ Test query, command and repository interfaces, to assert that Access client can
  - invoke the right service handler method
  */
 public class DataAccessClientTest {
-	private static String baseUrl = "http://localhost/acct/app";
+	private static String baseUrl = "http://localhost/acct/app/";
 	private static DataAccessClient client;
 	private static MockServiceHandler handler;
 
@@ -50,7 +50,7 @@ public class DataAccessClientTest {
 		ClassicQuery query = (ClassicQuery) client.getQuery(ClassicQuery.class);
 
 		// prepare service handler
-		String url = baseUrl + "/queries/getCustomer";
+		String url = baseUrl + "queries/getCustomer";
 		Customer customer = new Customer(101);
 		handler.addOutput(url, customer);
 
@@ -103,7 +103,7 @@ public class DataAccessClientTest {
 		assertEquals(payment, ((Map)returnedInput).get("payment"));
 
 		// test another method of the interface
-		url = baseUrl + "/queries/getProductLines";
+		url = baseUrl + "queries/getProductLines";
 		List<ProductLine> productLines = new ArrayList<>();
 		productLines.add(new ProductLine("NewLine"));
 		handler.addOutput(url, productLines);
@@ -120,7 +120,7 @@ public class DataAccessClientTest {
 		ClassicCommand command = (ClassicCommand)client.getCommand(ClassicCommand.class);
 
 		// prepare service handler
-		String url = baseUrl + "/commands/duplicateProductLine";
+		String url = baseUrl + "commands/duplicateProductLine";
 		ProductLine productLine = new ProductLine("Boat");
 		handler.addOutput(url, productLine);
 
@@ -135,7 +135,7 @@ public class DataAccessClientTest {
 		assertEquals( "Car", ((Map)input).get("sourceProductLine"));
 
 		// test another method
-		url = baseUrl + "/commands/removeCustomer";
+		url = baseUrl + "commands/removeCustomer";
 		command.removeCustomer(1234);
 		input = handler.getInput(url);
 		assertNotNull(input);
@@ -149,7 +149,7 @@ public class DataAccessClientTest {
 		OrderRepository repository = (OrderRepository) client.getRepository(OrderRepository.class);
 
 		// prepare
-		String url = baseUrl + "/repositories/order";
+		String url = baseUrl + "repositories/order";
 		Order order = new Order(100L);
 		List<Order> orders = new ArrayList();
 		orders.add(order);
