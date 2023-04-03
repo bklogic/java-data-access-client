@@ -86,6 +86,12 @@ public class JsonHandler {
      * To convert a JSON string into object
      */
     public Object toObject(String jsonString, Class<?> objType) {
+    	// check json string
+    	if (jsonString == null ||  jsonString.equals("")) {
+    		return null;
+    	}
+    	
+    	// convert to object
         Object object = null;
         try {
             object = mapper.readValue(jsonString, objType);
@@ -96,7 +102,6 @@ public class JsonHandler {
         } catch (IOException e) {
             throw new DataAccessException(DataAccessException.JsonException, "JsonIOException", e);
         }
-
         return object;
     }
 
