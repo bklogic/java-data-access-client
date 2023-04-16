@@ -1,37 +1,23 @@
-name: Deploy to Sonatype
-
-on: workflow_dispatch
-
-env:
-  SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-  SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-  GPG_PASSPHRASE: ${{ secrets.GPG_PHRASE }}
-
+name: Publish package to the Maven Central Repository
+on:
+  release:
+    types: [created]
 jobs:
-  build-and-deploy:
+  publish:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Java
+      - uses: actions/checkout@v3
+      - name: Set up Maven Central Repository
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
-
-      - name: Deploy to Sonatype
-        uses: sonatype-nexus-community/nexus-repository-gradle-publish@v1.0.0
-        with:
-          serverId: ossrh
-          groupId: net.backlogic.persistence
-          version: 0.0.4
-          repositoryUrl: https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/
-          closeAndReleaseRepository: true
+          distribution: 'adopt'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - name: Publish package
+        run: mvn --batch-mode deploy
         env:
-          SONATYPE_USERNAME: ${{ env.SONATYPE_USERNAME }}
-          SONATYPE_PASSWORD: ${{ env.SONATYPE_PASSWORD }}
-          GPG_PASSPHRASE: ${{ env.GPG_PASSPHRASE }}
+          MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          
