@@ -4,7 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Annotate an update method and map it to the update operation of a repository
+ * Annotate an update method and map it to the UPDATE operation of a repository
  * service.
  */
 @Retention(RetentionPolicy.RUNTIME)

@@ -1,28 +1,15 @@
 package net.backlogic.persistence.client.proxy;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-
 import net.backlogic.persistence.client.DataAccessException;
 import net.backlogic.persistence.client.annotation.BatchService;
 import net.backlogic.persistence.client.annotation.CommandService;
 import net.backlogic.persistence.client.annotation.QueryService;
 import net.backlogic.persistence.client.annotation.RepositoryService;
-import net.backlogic.persistence.client.handler.DefaultServiceHandler;
-import net.backlogic.persistence.client.handler.InputType;
-import net.backlogic.persistence.client.handler.JsonHandler;
-import net.backlogic.persistence.client.handler.ReturnType;
-import net.backlogic.persistence.client.handler.ServiceHandler;
-import net.backlogic.persistence.client.handler.TypeUtil;
+import net.backlogic.persistence.client.auth.JwtProvider;
+import net.backlogic.persistence.client.handler.*;
+
+import java.lang.reflect.*;
+import java.util.*;
 
 /**
  * Responsible for generating persistence proxy from interface
@@ -44,7 +31,7 @@ public class ProxyFactory {
         init();
     }
     
-    public void setJwtProvider(Supplier<String> jwtProvider) {
+    public void setJwtProvider(JwtProvider jwtProvider) {
     	this.serviceHandler.setJwtProvider(jwtProvider);
     }
     

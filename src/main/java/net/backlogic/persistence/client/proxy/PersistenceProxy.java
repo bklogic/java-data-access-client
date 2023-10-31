@@ -3,19 +3,15 @@
  */
 package net.backlogic.persistence.client.proxy;
 
+import net.backlogic.persistence.client.handler.ReturnType;
+import net.backlogic.persistence.client.handler.ServiceHandler;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import net.backlogic.persistence.client.handler.ReturnType;
-import net.backlogic.persistence.client.handler.ServiceHandler;
-import net.backlogic.persistence.client.handler.TypeUtil;
 
 /**
  * Proxy Strategy:
@@ -44,7 +40,9 @@ public class PersistenceProxy implements InvocationHandler {
             Object input = this.getInput(sm, args);
 
             // invoke service
-            Object output = this.serviceHandler.invoke(sm.getServiceUrl(), input, sm.getReturnType(), sm.getElementType());
+            Object output = this.serviceHandler.invoke(
+                    sm.getServiceUrl(), input, sm.getReturnType(), sm.getElementType(), true
+            );
 
             // convert list to instance, for ReadById
             if (output instanceof List && sm.getReturnType() == ReturnType.OBJECT) {

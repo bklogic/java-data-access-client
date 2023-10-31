@@ -1,9 +1,9 @@
 package net.backlogic.persistence.client.proxy;
 
-import static net.backlogic.persistence.client.proxy.BatchBuiltInCommand.CLEAN;
-import static net.backlogic.persistence.client.proxy.BatchBuiltInCommand.GET;
-import static net.backlogic.persistence.client.proxy.BatchBuiltInCommand.RUN;
-import static net.backlogic.persistence.client.proxy.BatchBuiltInCommand.SAVE;
+import net.backlogic.persistence.client.DataAccessException;
+import net.backlogic.persistence.client.handler.JsonHandler;
+import net.backlogic.persistence.client.handler.ReturnType;
+import net.backlogic.persistence.client.handler.ServiceHandler;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -11,10 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import net.backlogic.persistence.client.DataAccessException;
-import net.backlogic.persistence.client.handler.JsonHandler;
-import net.backlogic.persistence.client.handler.ReturnType;
-import net.backlogic.persistence.client.handler.ServiceHandler;
+import static net.backlogic.persistence.client.proxy.BatchBuiltInCommand.*;
 
 public class BatchProxy extends PersistenceProxy {
 	
@@ -65,7 +62,9 @@ public class BatchProxy extends PersistenceProxy {
 		
 		// invoke services
 		@SuppressWarnings("unchecked")
-		Map<String, Object> outputMap = (Map<String, Object>) serviceHandler.invoke(batchServiceUrl, invocations, ReturnType.MAP, String.class);
+		Map<String, Object> outputMap = (Map<String, Object>) serviceHandler.invoke(
+				batchServiceUrl, invocations, ReturnType.MAP, String.class, true
+		);
 		
 		// process outputs
 		for ( int i = 0; i<invocations.size(); i++) {

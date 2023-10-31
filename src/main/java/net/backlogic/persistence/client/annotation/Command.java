@@ -4,7 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Annotate a command method and map it a command service.
+ * Annotate a command method and map it to a SQL service.
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Command {

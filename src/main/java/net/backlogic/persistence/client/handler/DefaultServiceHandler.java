@@ -1,21 +1,16 @@
 package net.backlogic.persistence.client.handler;
 
-import static net.backlogic.persistence.client.handler.HTTP.APPLICATION_JSON;
-import static net.backlogic.persistence.client.handler.HTTP.AUTHORIZATION;
-import static net.backlogic.persistence.client.handler.HTTP.BEARER;
-import static net.backlogic.persistence.client.handler.HTTP.HTTP_ACCEPT;
-import static net.backlogic.persistence.client.handler.HTTP.HTTP_CONTENT_TYPE;
+import net.backlogic.persistence.client.DataAccessException;
+import net.backlogic.persistence.client.auth.JwtProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.function.Supplier;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.backlogic.persistence.client.DataAccessException;
+import static net.backlogic.persistence.client.handler.HTTP.*;
 
 public class DefaultServiceHandler implements ServiceHandler {
     Logger LOGGER = LoggerFactory.getLogger(DefaultServiceHandler.class);
@@ -25,16 +20,15 @@ public class DefaultServiceHandler implements ServiceHandler {
 
     private JsonHandler jsonHandler;
     private ExceptionHandler exceptionHandler;
-    private Supplier<String> jwtProvider;
+    private JwtProvider jwtProvider;
 
     public DefaultServiceHandler(String baseUrl, JsonHandler jsonHandler) {
         this.baseUrl = baseUrl;
         this.jsonHandler = jsonHandler;
         this.exceptionHandler = new ExceptionHandler(jsonHandler);
-        this.jwtProvider = () -> "";
     }
 
-    public void setJwtProvider(Supplier<String> jwtProvider) {
+    public void setJwtProvider(JwtProvider jwtProvider) {
     	this.jwtProvider = jwtProvider;
     }
 
@@ -44,7 +38,7 @@ public class DefaultServiceHandler implements ServiceHandler {
 	}
 
     @Override
-    public Object invoke(String serviceUrl, Object serviceInput, ReturnType returnType, Class<?> elementType) {
+    public Object invoke(String serviceUrl, Object serviceInput, ReturnType returnType, Class<?> elementType, boolean retryOn403) {
         // url
         String url = this.baseUrl + serviceUrl;
 
@@ -79,6 +73,17 @@ public class DefaultServiceHandler implements ServiceHandler {
         int statusCode = response.statusCode();
         if (statusCode == 200) {
             return this.jsonHandler.toReturnType(response.body(), returnType, elementType);
+        }
+        else if (statusCode == 403) {
+            LOGGER.info("403 error encountered.");
+            if (retryOn403) {
+                LOGGER.info("refresh JWT and retry");
+                jwtProvider.refresh();
+                return this.invoke(serviceUrl, serviceInput, returnType, elementType, false);
+            } else {
+                LOGGER.info("no retry");
+                throw this.exceptionHandler.handleResponse(statusCode, response.body());
+            }
         }
         else if (statusCode > 0) {
             throw this.exceptionHandler.handleResponse(statusCode, response.body());

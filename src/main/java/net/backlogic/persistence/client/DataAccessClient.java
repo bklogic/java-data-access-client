@@ -1,11 +1,11 @@
 package net.backlogic.persistence.client;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
-
+import net.backlogic.persistence.client.auth.JwtProvider;
 import net.backlogic.persistence.client.handler.ServiceHandler;
 import net.backlogic.persistence.client.proxy.ProxyFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The main class of data access client.
@@ -21,7 +21,7 @@ public class DataAccessClient {
 	private Map<Class<?>, Object> proxyCache;
 
 	/**
-	 * Construct data access client, which is normally done by calling
+	 * Construct data access client, which shall be done by calling
 	 * DataAccessClientBuilder.build()
 	 * 
 	 * @param baseUrl	baseUrl for data access services
@@ -33,7 +33,7 @@ public class DataAccessClient {
 
 	
 	/**
-	 * Construct data access client, which is normally done by calling
+	 * Construct data access client, which shall be done by calling
 	 * DataAccessClientBuilder.build()
 	 * 
 	 * @param serviceHandler	the ServiceHandler for data access services
@@ -44,23 +44,25 @@ public class DataAccessClient {
 	}
 
 	/**
-	 * Get an instance of DataAccessCLientBuilder.
-	 * @return	an instance of DataAccessCLientBuilder
+	 * Get an instance of DataAccessClientBuilder.
+	 * @return	an instance of DataAccessClientBuilder
 	 */
 	public static DataAccessClientBuilder builder() {
 		return new DataAccessClientBuilder();
 	}
 
 	/**
-	 * Set the JWT provider for data access client
+	 * Set the JWT provider for data access client. If configured, data access client uses this provider
+	 * to acquire a BEARER token for service authentication.
+	 * This client has an implementation of JwtProvider in DefaultJwtProvider based on DefaultJwtCredential.
 	 * @param jwtProvider	the JWT provide
 	 */
-	public void setJwtProvider(Supplier<String> jwtProvider) {
+	public void setJwtProvider(JwtProvider jwtProvider) {
 		this.proxyFactory.setJwtProvider(jwtProvider);
 	}
 
 	/**
-	 * Set the logRequest property for data access client
+	 * Set the logRequest property for data access client for enabling or disabling request logging.
 	 * @param logRequest	log request and response if true. Default false.
 	 */
 	public void logRequest(boolean logRequest) {
@@ -71,7 +73,7 @@ public class DataAccessClient {
 	 * Get a proxy object for a query interface type
 	 *
 	 * @param queryType the interface type
-	 * @return	a proxy for given interface type. Return null if not exists.
+	 * @return	a proxy for given interface type. Throws DataAccessException if not annotated properly.
 	 */
 	public <T> T getQuery(Class<T> queryType) {
 		@SuppressWarnings("unchecked")
@@ -87,7 +89,7 @@ public class DataAccessClient {
 	 * Get a proxy object for a command interface type
 	 *
 	 * @param commandType the interface type
-	 * @return	a proxy for given interface type. Return null if not exists.
+	 * @return	a proxy for given interface type. Throws DataAccessException if not annotated properly.
 	 */
 	public <T> T getCommand(Class<T> commandType) {
 		@SuppressWarnings("unchecked")
@@ -103,7 +105,7 @@ public class DataAccessClient {
 	 * Get a proxy object for a repository interface type
 	 *
 	 * @param repositoryType the interface type
-	 * @return	proxy for given interface type. Return null if not exists.
+	 * @return	proxy for given interface type. Throws DataAccessException if not annotated properly.
 	 */
 	public <T> T getRepository(Class<T> repositoryType) {
 		@SuppressWarnings("unchecked")
@@ -115,6 +117,12 @@ public class DataAccessClient {
 		return proxy;
 	}
 
+	/**
+	 * Get a proxy object for a batch interface
+	 * @param batchType the interface type
+	 * @return	proxy for given interface type. Throws DataAccessException if not annotated properly.
+	 * @param <T>
+	 */
 	public <T> T getBatch(Class<T> batchType) {
 		// create proxy
 		T proxy = proxyFactory.createBatch(batchType);

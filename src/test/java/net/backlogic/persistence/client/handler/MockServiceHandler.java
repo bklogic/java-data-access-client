@@ -1,8 +1,9 @@
 package net.backlogic.persistence.client.handler;
 
+import net.backlogic.persistence.client.auth.JwtProvider;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
 public class MockServiceHandler implements ServiceHandler {
 	private String baseUrl;
@@ -27,7 +28,7 @@ public class MockServiceHandler implements ServiceHandler {
 	}
 
 	@Override
-	public Object invoke(String serviceUrl, Object serviceInput, ReturnType returnType, Class<?> elementType) {
+	public Object invoke(String serviceUrl, Object serviceInput, ReturnType returnType, Class<?> elementType, boolean retryOn403) {
 		// save input
 		String url = baseUrl + serviceUrl;
 		this.inputStore.put(url, serviceInput);
@@ -37,7 +38,7 @@ public class MockServiceHandler implements ServiceHandler {
 	}
 
 	@Override
-	public void setJwtProvider(Supplier<String> jwtProvider) {
+	public void setJwtProvider(JwtProvider jwtProvider) {
 	}
 
 	@Override
