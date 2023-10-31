@@ -1,0 +1,7 @@
+net.backlogic.persistence.client
+net.backlogic.persistence.client.annotation
+net.backlogic.persistence.client.auth
+net.backlogic.persistence.client.classicmodel
+net.backlogic.persistence.client.handler
+net.backlogic.persistence.client.proxy
+net.backlogic.persistent.client.proxy
