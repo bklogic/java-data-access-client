@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.backlogic.persistence</groupId>
   <artifactId>data-access-client</artifactId>
-  <version>0.0.5</version>
+  <version>0.0.6-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>data-access-client</name>
   <description>Java Data Access Client</description>
@@ -75,7 +75,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.11.0</version>
 				<configuration>
 					<!-- the -parameters arg is needed to support method parameter name reflection
 						for persistence interface-->
@@ -91,7 +91,7 @@
 			<plugin>
 			    <groupId>org.sonatype.plugins</groupId>
 			    <artifactId>nexus-staging-maven-plugin</artifactId>
-			    <version>1.6.7</version>
+			    <version>1.6.13</version>
 			    <extensions>true</extensions>
 			    <configuration>
 			        <serverId>ossrh</serverId>
@@ -112,42 +112,42 @@
 			        </execution>
 			    </executions>
 			</plugin>
-<!--			<plugin>-->
-<!--			    <groupId>org.apache.maven.plugins</groupId>-->
-<!--			    <artifactId>maven-javadoc-plugin</artifactId>-->
-<!--			    <version>2.9.1</version>-->
-<!--				<configuration>-->
-<!--					<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>-->
-<!--				</configuration>-->
-<!--			    <executions>-->
-<!--			        <execution>-->
-<!--			            <id>attach-javadocs</id>-->
-<!--			            <goals>-->
-<!--			                <goal>jar</goal>-->
-<!--			            </goals>-->
-<!--			        </execution>-->
-<!--			    </executions>-->
-<!--			</plugin>-->
-<!--			<plugin>-->
-<!--			    <groupId>org.apache.maven.plugins</groupId>-->
-<!--			    <artifactId>maven-gpg-plugin</artifactId>-->
-<!--			    <version>1.6</version>-->
-<!--			    <executions>-->
-<!--			        <execution>-->
-<!--			            <id>sign-artifacts</id>-->
-<!--			            <phase>verify</phase>-->
-<!--			            <goals>-->
-<!--			                <goal>sign</goal>-->
-<!--			            </goals>-->
-<!--						<configuration>-->
-<!--			                <gpgArguments>-->
-<!--			                    <arg>&#45;&#45;pinentry-mode</arg>-->
-<!--			                    <arg>loopback</arg>-->
-<!--			                </gpgArguments>-->
-<!--			            </configuration>-->
-<!--			        </execution>-->
-<!--			    </executions>-->
-<!--			</plugin>	-->
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-javadoc-plugin</artifactId>
+			    <version>2.9.1</version>
+				<configuration>
+					<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+				</configuration>
+			    <executions>
+			        <execution>
+			            <id>attach-javadocs</id>
+			            <goals>
+			                <goal>jar</goal>
+			            </goals>
+			        </execution>
+			    </executions>
+			</plugin>
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-gpg-plugin</artifactId>
+			    <version>1.6</version>
+			    <executions>
+			        <execution>
+			            <id>sign-artifacts</id>
+			            <phase>verify</phase>
+			            <goals>
+			                <goal>sign</goal>
+			            </goals>
+						<configuration>
+			                <gpgArguments>
+			                    <arg>--pinentry-mode</arg>
+			                    <arg>loopback</arg>
+			                </gpgArguments>
+			            </configuration>
+			        </execution>
+			    </executions>
+			</plugin>
 		</plugins>
 	</build>
 

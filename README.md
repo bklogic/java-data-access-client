@@ -1,10 +1,15 @@
-# Java Data Access Client
+# Java Data Access Client (JDAC)
 
-A Java client for data access services. It follows the familiar data access object (DAO) and repository design patterns, except here the user writes the annotated DAO and repository interface, but the data access client provides an implementation behind the scene and invokes the remote data access service when any of the interface methods is called.  
+A Java client for data access services. It follows the familiar data access object (DAO) and 
+repository design patterns, except here the user writes the annotated DAO and repository interface, 
+but the data access client provides an implementation behind the scene and invokes 
+the remote data access service when the interface methods are called.  
 
-To understand data access services, please take a look :  
+If you don't know what data access service is, please take a look :  
+
 [Data Access Service Documentation](https://docs.backlogic.net/#/DataAccessService)  
-It is a simple way to to solve your complex relational database access problem.
+
+It is a simple way to solve complex relational database access problem.
 
 To get started with this Java client, please read on.
 
@@ -61,6 +66,8 @@ public interface CustomerRepository {
 	public Customer delete(Customer customer);
 	@Read
 	public Customer getById(Integer customerNumber);
+	@Read
+	public List<Customer> getByCity(String city);
 }
 ```
 
@@ -79,12 +86,11 @@ myQuery.removeCustomer(123);
 Customer customer = new Customer("Joe", "Los Angeles");
 CustomerRepository repository = client.getRepository(CustomerRepository.class);
 customer = repository.create(customer)
-
 ```
 
 ## Logging
 
-Logging may be enabled for data access client to log all service requests and responses as follows:
+Logging may be enabled for JDAC to log all service requests and responses as follows:
 
 ```groovy
 DataAccessClient client = DataAccessClient.builder()
@@ -95,7 +101,7 @@ DataAccessClient client = DataAccessClient.builder()
 
 ## JWT Based Authentication
 
-Data access client will send a bearer token with service request, if a JWT provider is configured as follows:
+JDAC will send a bearer token with service request, if a JWT provider is configured as follows:
 
 ```groovy
 JwtProvider jwtProvider = new SimpleJwtProvider().setJwt("myJwtString")
@@ -120,12 +126,12 @@ public interface JwtProvider {
 - refresh() for refreshing JWT cache, so that the next get() returns a new JWT token
 - set() for setting the properties of the JwtProvider
 
-Besides the naive SimpleJwtProvider that simply takes and stores a JWT token, data access client also implements
-a BasicJwtProvider that relies an auth service for JWT token, to support the BackLogic DevTime service:
+Besides the naive SimpleJwtProvider that simply takes and stores a JWT token, JDAC also implements
+a BasicJwtProvider that relies on an auth service for JWT token:
 
 ```groovy
 BasicJwtProviderProperties properties = new BasicJwtProviderProperties(authEndpoint, serviceKey, serviceSecrete);
-JwtProvider jwtProvider = new BasicJwtProvider().setJwt("myJwtString")
+JwtProvider jwtProvider = new BasicJwtProvider(properties);
 DataAccessClient client = DataAccessClient.builder()
         .baseUrl("https://try4.devtime.tryprod.backlogic.net/service/try4/example")
         .logRequest(true)
@@ -133,13 +139,14 @@ DataAccessClient client = DataAccessClient.builder()
         .build();
 ```
 
-The authEndpoint, serviceKey, serviceSecrete for the DevTime service are available from the Service Builder `Show Workplace` menu.
+For DevTime service hosted in BackLogic workspace, authEndpoint, serviceKey, serviceSecrete are available 
+from Service Builder, the VSCode extension for data access service development.
 
 ## Spring Boot
 
-For Spring Boot users, the BackLogic Data access Spring Boot Starter shall be used:  
-[Data Access Spring Boot Starter](https://github.com/bklogic/backlogic-spring-boot-starter)
+For Spring Boot users, you should use RAD Spring Boot Starter:  
 
-This starter automatically registers all data access interfaces as injectable Spring Boot beans, 
-and the user can simply `Autowire` a query, command or repository interface and 
-start to call its methods. 
+[RDA Spring Boot Starter](https://github.com/bklogic/rda-spring-boot-starter)
+
+It embeds JDAC inside of the starter, and automatically registers all data access interfaces as Spring Boot beans. 
+Thus, the user may simply `Autowire` a query, command or repository interface and start to call its methods. 
