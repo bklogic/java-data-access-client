@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * The base class for batched services. A batch service interface shall be annotated with the
- * @BatchService annotation and extends this class, which provides method to
+ * {@literal @}BatchService annotation and extends this class, which provides method to
  * invoke the batched services.
  */
 public interface Batch {
