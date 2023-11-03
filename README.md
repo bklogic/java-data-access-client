@@ -1,9 +1,9 @@
 # Java Data Access Client (JDAC)
 
 A Java client for data access services. It follows the familiar data access object (DAO) and 
-repository design patterns, except here the user writes the annotated DAO and repository interface, 
+repository design patterns, except that here the user writes the annotated DAO and repository interface, 
 but the data access client provides an implementation behind the scene and invokes 
-the remote data access service when the interface methods are called.  
+the remote data access service when the interface method is called.  
 
 If you don't know what data access service is, please take a look :  
 

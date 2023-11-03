@@ -4,7 +4,7 @@
   <artifactId>data-access-client</artifactId>
   <version>0.0.6-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>data-access-client</name>
+  <name>java-data-access-client</name>
   <description>Java Data Access Client</description>
   <url>https://github.com/bklogic/java-data-access-client</url>
   <licenses>
@@ -29,15 +29,11 @@
     </developer>
   </developers>
   
-  <scm>
-    <connection>scm:git:git://github.com/bklogic/java-data-access-client.git</connection>
-    <developerConnection>scm:git:ssh://github.com:bklogic/java-data-access-client.git</developerConnection>
-    <url>https://github.com/bklogic/java-data-access-client.git</url>
-  </scm>
-    
   <properties>
 	  <maven.compiler.source>17</maven.compiler.source>
 	  <maven.compiler.target>17</maven.compiler.target>
+	  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	  <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
   
   <dependencies>
@@ -88,67 +84,96 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.22.2</version>
 			</plugin>
-			<plugin>
-			    <groupId>org.sonatype.plugins</groupId>
-			    <artifactId>nexus-staging-maven-plugin</artifactId>
-			    <version>1.6.13</version>
-			    <extensions>true</extensions>
-			    <configuration>
-			        <serverId>ossrh</serverId>
-			        <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-			        <autoReleaseAfterClose>true</autoReleaseAfterClose>
-			    </configuration>
-			</plugin>    
-			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-source-plugin</artifactId>
-			    <version>2.2.1</version>
-			    <executions>
-			        <execution>
-			            <id>attach-sources</id>
-			            <goals>
-			                <goal>jar-no-fork</goal>
-			            </goals>
-			        </execution>
-			    </executions>
-			</plugin>
-			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-javadoc-plugin</artifactId>
-			    <version>2.9.1</version>
-				<configuration>
-					<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
-				</configuration>
-			    <executions>
-			        <execution>
-			            <id>attach-javadocs</id>
-			            <goals>
-			                <goal>jar</goal>
-			            </goals>
-			        </execution>
-			    </executions>
-			</plugin>
-			<plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-gpg-plugin</artifactId>
-			    <version>1.6</version>
-			    <executions>
-			        <execution>
-			            <id>sign-artifacts</id>
-			            <phase>verify</phase>
-			            <goals>
-			                <goal>sign</goal>
-			            </goals>
-						<configuration>
-			                <gpgArguments>
-			                    <arg>--pinentry-mode</arg>
-			                    <arg>loopback</arg>
-			                </gpgArguments>
-			            </configuration>
-			        </execution>
-			    </executions>
-			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.2.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.9.1</version>
+						<configuration>
+							<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+						</configuration>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<configuration>
+									<gpgArguments>
+										<arg>--pinentry-mode</arg>
+										<arg>loopback</arg>
+									</gpgArguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>2.5.3</version>
+						<configuration>
+							<autoVersionSubmodules>true</autoVersionSubmodules>
+							<tagNameFormat>@{project.version}</tagNameFormat>
+							<pushChanges>false</pushChanges>
+							<localCheckout>true</localCheckout>
+							<remoteTagging>false</remoteTagging>
+							<arguments>-DskipTests=true</arguments>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.13</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<scm>
+		<connection>scm:git:git://github.com/bklogic/java-data-access-client.git</connection>
+		<developerConnection>scm:git:ssh://github.com:bklogic/java-data-access-client.git</developerConnection>
+		<url>https://github.com/bklogic/java-data-access-client.git</url>
+	</scm>
 
 </project>
