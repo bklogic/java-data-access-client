@@ -5,11 +5,11 @@ repository design patterns, except that here the user writes the annotated DAO a
 but the data access client provides an implementation behind the scene and invokes 
 the remote data access service when the interface method is called.  
 
-If you don't know what data access service is, please take a look :  
+If you don't know what data access service is, please take a look at:  
 
 [Data Access Service Documentation](https://docs.backlogic.net/#/DataAccessService)  
 
-It is a simple way to solve complex relational database access problem.
+It is a simple way to take care of complex relational database access problem.
 
 To get started with this Java client, please read on.
 
@@ -21,11 +21,11 @@ To get started with this Java client, please read on.
 <dependency>
     <groupId>net.backlogic.persistence</groupId>
     <artifactId>data-access-client</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
 </dependency>
 ``` 
 
-### Get Data Access Client
+### Data Access Client
 
 ```goovy
 DataAccessClient client = DataAccessClient.builder()
@@ -101,7 +101,7 @@ DataAccessClient client = DataAccessClient.builder()
 
 ## JWT Based Authentication
 
-JDAC will send a bearer token with service request, if a JWT provider is configured as follows:
+A JWT bearer token will be sent with service request, if a JWT provider is configured as follows:
 
 ```groovy
 JwtProvider jwtProvider = new SimpleJwtProvider().setJwt("myJwtString")
@@ -123,7 +123,7 @@ public interface JwtProvider {
 ```
 
 - get() for getting a JWT token
-- refresh() for refreshing JWT cache, so that the next get() returns a new JWT token
+- refresh() for refreshing cached JWT token, so that the next get() returns a new JWT token
 - set() for setting the properties of the JwtProvider
 
 Besides the naive SimpleJwtProvider that simply takes and stores a JWT token, JDAC also implements
@@ -144,9 +144,13 @@ from Service Builder, the VSCode extension for data access service development.
 
 ## Spring Boot
 
-For Spring Boot users, you should use RAD Spring Boot Starter:  
+For Spring Boot users, a Spring Boot Starter is available here:  
 
-[RDA Spring Boot Starter](https://github.com/bklogic/rda-spring-boot-starter)
+[JDAC Spring Boot Starter](https://github.com/bklogic/jdac-spring-boot-starter)
 
-It embeds JDAC inside of the starter, and automatically registers all data access interfaces as Spring Boot beans. 
+It embeds JDAC inside of the starter, and automatically registers all custom data access interfaces as Spring Boot beans. 
 Thus, the user may simply `Autowire` a query, command or repository interface and start to call its methods. 
+It is much easier and cleaner than dealing with the DataAccessClient directly. 
+
+
+
