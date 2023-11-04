@@ -132,6 +132,7 @@ public class ProxyFactory {
         // build service map
         String interfaceUrl = persistAnnotation.value();
         String batchServiceUrl = UrlUtil.getUrl(interfaceUrl, BATCH_URL);
+        batchServiceUrl = batchServiceUrl.substring(1); // discard initial "/".
         ServiceMethodFinder finder = this.finderMap.get(BatchService.class);
         Map<String, ServiceMethod> serviceMap = buildServiceMap(null, batchType.getMethods(), finder);
         
