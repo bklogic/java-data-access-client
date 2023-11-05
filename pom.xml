@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.backlogic.persistence</groupId>
   <artifactId>data-access-client</artifactId>
-  <version>0.0.7-SNAPSHOT</version>
+  <version>0.1.0</version>
   <packaging>jar</packaging>
   <name>java-data-access-client</name>
   <description>Java Data Access Client</description>
@@ -82,7 +82,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
+				<version>3.1.2</version>
 			</plugin>
 		</plugins>
 	</build>
@@ -95,7 +95,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>2.2.1</version>
+						<version>3.2.0</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>
@@ -108,7 +108,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.9.1</version>
+						<version>3.2.0</version>
 						<configuration>
 							<javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
 						</configuration>
@@ -124,7 +124,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
+						<version>3.1.0</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -140,19 +140,6 @@
 								</configuration>
 							</execution>
 						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-release-plugin</artifactId>
-						<version>2.5.3</version>
-						<configuration>
-							<autoVersionSubmodules>true</autoVersionSubmodules>
-							<tagNameFormat>@{project.version}</tagNameFormat>
-							<pushChanges>false</pushChanges>
-							<localCheckout>true</localCheckout>
-							<remoteTagging>false</remoteTagging>
-							<arguments>-DskipTests=true</arguments>
-						</configuration>
 					</plugin>
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
