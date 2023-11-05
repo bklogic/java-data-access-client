@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.backlogic.persistence</groupId>
   <artifactId>data-access-client</artifactId>
-  <version>0.0.6</version>
+  <version>0.0.7-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>java-data-access-client</name>
   <description>Java Data Access Client</description>

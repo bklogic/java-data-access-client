@@ -150,7 +150,7 @@ For Spring Boot users, a Spring Boot Starter is available here:
 
 It embeds JDAC inside of the starter, and automatically registers all custom data access interfaces as Spring Boot beans. 
 Thus, the user may simply `Autowire` a query, command or repository interface and start to call its methods. 
-It is much easier and cleaner than dealing with the DataAccessClient directly. 
+It is even easier and cleaner than dealing with the DataAccessClient directly. 
 
 
 

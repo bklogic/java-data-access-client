@@ -16,4 +16,8 @@ public class QueryServiceMethodFinder implements ServiceMethodFinder {
     	return methodUrl;
 	}
 
+    @Override
+    public String returnMapping(Method method) {
+        return null;
+    }
 }

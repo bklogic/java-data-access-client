@@ -1,7 +1,9 @@
 package net.backlogic.persistence.client.annotation;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * <p>Annotate a Batch interface.</p>
@@ -15,6 +17,7 @@ import java.lang.annotation.RetentionPolicy;
  * Currently supported batch services include batched queries, batched commands and batched crud operations.
  * </p>
  */
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BatchService {
     String value() default "";

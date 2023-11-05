@@ -2,14 +2,7 @@ package net.backlogic.persistence.client.proxy;
 
 import java.lang.reflect.Method;
 
-import net.backlogic.persistence.client.annotation.Command;
-import net.backlogic.persistence.client.annotation.Create;
-import net.backlogic.persistence.client.annotation.Delete;
-import net.backlogic.persistence.client.annotation.Merge;
-import net.backlogic.persistence.client.annotation.Query;
-import net.backlogic.persistence.client.annotation.Read;
-import net.backlogic.persistence.client.annotation.Save;
-import net.backlogic.persistence.client.annotation.Update;
+import net.backlogic.persistence.client.annotation.*;
 
 public class BatchServiceMethodFinder implements ServiceMethodFinder {
 
@@ -45,5 +38,14 @@ public class BatchServiceMethodFinder implements ServiceMethodFinder {
         }
     	return methodUrl;
 	}
+
+    @Override
+    public String returnMapping(Method method) {
+        if (method.getAnnotation(ReturnMapping.class) != null) {
+            return method.getAnnotation(ReturnMapping.class).value();
+        } else {
+            return null;
+        }
+    }
 
 }

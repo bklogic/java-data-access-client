@@ -135,11 +135,21 @@ public class ProxyFactory {
         batchServiceUrl = batchServiceUrl.substring(1); // discard initial "/".
         ServiceMethodFinder finder = this.finderMap.get(BatchService.class);
         Map<String, ServiceMethod> serviceMap = buildServiceMap(null, batchType.getMethods(), finder);
-        
+
+        // get return type
+        Class<?> returnType;
+        try {
+            Type type = batchType.getGenericInterfaces()[0];
+            type = ((ParameterizedType)type).getActualTypeArguments()[0];
+            returnType = (Class) type;
+        } catch (Exception e) {
+            throw new DataAccessException("InvalidBatchInterface", "BatchService interface must extends and only extends typed Batch interface");
+        }
+
         //instantiate command interface proxy
         @SuppressWarnings("unchecked")
-		T proxy = (T) Proxy.newProxyInstance(
-        		batchType.getClassLoader(), new Class[]{batchType}, new BatchProxy(serviceHandler, jsonHandler, serviceMap, batchServiceUrl)
+		T proxy = (T) Proxy.newProxyInstance (
+        		batchType.getClassLoader(), new Class[]{batchType}, new BatchProxy(serviceHandler, jsonHandler, serviceMap, batchServiceUrl, returnType)
         );
 
         return proxy;
@@ -197,10 +207,11 @@ public class ProxyFactory {
     	    
     	    // input type
     	    InputType inputType = this.getInputType(method, T);
-    	    
+
     		// service method
     	    String methodKey = MethodUtil.createMethodKey(method);
-    	    ServiceMethod serviceMethod = new ServiceMethod(serviceUrl, outputType, elementType, inputType, method.getParameters());
+    	    ServiceMethod serviceMethod = new ServiceMethod(serviceUrl, outputType, elementType,
+                    inputType, method.getParameters(), finder.returnMapping(method));
     	    map.put(methodKey, serviceMethod);
     	}
     	

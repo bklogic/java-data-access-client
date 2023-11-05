@@ -5,11 +5,10 @@ import net.backlogic.persistence.client.handler.JsonHandler;
 import net.backlogic.persistence.client.handler.ReturnType;
 import net.backlogic.persistence.client.handler.ServiceHandler;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static net.backlogic.persistence.client.proxy.BatchBuiltInCommand.*;
 
@@ -21,14 +20,20 @@ public class BatchProxy extends PersistenceProxy {
 	private List<BatchedInvocation> invocations;
 	private String batchServiceUrl;
 
+	private Class<?> returnType;
+
+	private Map<String, Method> returnMap;
+
     public BatchProxy(ServiceHandler serviceHandler, JsonHandler jsonHandler, 
-    			Map<String, ServiceMethod> serviceMap, String batchServiceUrl) {
+    			Map<String, ServiceMethod> serviceMap, String batchServiceUrl, Class<?> returnType) {
     	super(serviceHandler, serviceMap);
         this.serviceHandler = serviceHandler;
         this.jsonHandler = jsonHandler;
         this.serviceMap = serviceMap;
         this.invocations = new ArrayList<>();
         this.batchServiceUrl = batchServiceUrl;
+		this.returnType = returnType;
+		this.returnMap = createReturnMap(returnType, serviceMap);
     }
 
 	@Override
@@ -55,11 +60,59 @@ public class BatchProxy extends PersistenceProxy {
 		return null;
 	}
 
-	
-	private Object[] run() {
+	/**
+	 * Create a return map for the batch service, keyed by field name of return type,
+	 * with value being the setter method for the field.
+	 * @param returnType	return type of the batch service
+	 * @param serviceMap service map for the batch service; value is ServiceMethod
+	 * @return return map created
+	 */
+	private Map<String, Method> createReturnMap(Class returnType, Map<String, ServiceMethod> serviceMap) {
+		// if return type is array
+		if (returnType.isArray()) {
+			return null;
+		}
+
+		// or else
+		Map<String, Method> returnMap = new HashMap<>();
+		for (Map.Entry<String, ServiceMethod> entry: serviceMap.entrySet()) {
+			// field name
+			String fieldName = entry.getValue().getReturnMapping();
+			if (fieldName == null) {
+				continue;
+			}
+			// setter
+			String setterName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+			Method setter;
+			try {
+				Field field = returnType.getDeclaredField(fieldName);
+				setter = returnType.getMethod(setterName, field.getType());
+			} catch (NoSuchFieldException e) {
+				throw new DataAccessException("BatchProxyError", "Field not found for: "
+						+ fieldName + " of " + returnType.getName());
+			} catch (NoSuchMethodException e) {
+				throw new DataAccessException("BatchProxyError", "Setter method not found for: "
+						+ setterName + " of " + returnType.getName());
+			}
+			// add map entry
+			returnMap.put(fieldName, setter);
+		}
+		// return
+		return returnMap;
+	}
+
+	private Object run() {
 		// output array
 		Object[] outputs = new Object[this.invocations.size()];
-		
+		Object batchReturn = null;
+		if (returnMap != null) {
+			try {
+				batchReturn = returnType.getConstructors()[0].newInstance();
+			} catch (Exception e) {
+				throw new DataAccessException("BatchExecutionError", "Problem to instantiate batch return object", e);
+			}
+		}
+
 		// invoke services
 		@SuppressWarnings("unchecked")
 		Map<String, Object> outputMap = (Map<String, Object>) serviceHandler.invoke(
@@ -83,10 +136,21 @@ public class BatchProxy extends PersistenceProxy {
 			} else if (sm.getReturnType() == ReturnType.LIST) {
 				output = new ArrayList<>();
 			}
-			outputs[i] = output;						
+			// add to output array
+			outputs[i] = output;
+			// add to return object
+			if (returnMap != null && sm.getReturnMapping() != null) {
+				String fieldName = sm.getReturnMapping();
+				Method setter = returnMap.get(fieldName);
+				try {
+					setter.invoke(batchReturn, output);
+				} catch (Exception e) {
+					throw new DataAccessException("BatchExecutionError", "Failed to set return field: "
+							+ fieldName + " of " + returnType.getName(), e);
+				}
+			}
 		}
-		
-		return outputs;
+		// return
+		return (batchReturn != null) ? batchReturn : outputs;
 	}
-	
 }

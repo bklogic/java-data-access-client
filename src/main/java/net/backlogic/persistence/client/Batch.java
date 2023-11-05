@@ -1,18 +1,19 @@
 package net.backlogic.persistence.client;
 
-import java.util.List;
-
 /**
- * The base class for batched services. A batch service interface shall be annotated with the
- * {@literal @}BatchService annotation and extends this class, which provides method to
- * invoke the batched services.
+ * <p>
+ * The generic base class for batched services.
+ * </p>
+ * <p>
+ * A batch service interface shall be annotated with {@literal @}BatchService
+ * and extends this interface, which provides method to invoke the batched services.
+ * The type T designates the return type of the batch service. It can be a DTO type
+ * or a generic array.
+ * </p>
  */
-public interface Batch {
-	
-	public Object[] run();
-	public Object[] get();
-	public List<Object> save();
-	
-	public void clean();
-	
+public interface Batch<T> {
+	T run();
+	T get();
+	T save();
+	void clean();
 }

@@ -30,4 +30,10 @@ public class RepositoryServiceMethodFinder implements ServiceMethodFinder {
         }
     	return methodUrl;
 	}
+
+    @Override
+    public String returnMapping(Method method) {
+        return null;
+    }
+
 }
