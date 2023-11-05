@@ -12,7 +12,11 @@ import java.util.*;
 
 import static net.backlogic.persistence.client.proxy.BatchBuiltInCommand.*;
 
-public class BatchProxy extends PersistenceProxy {
+/**
+ * Proxy for BatchService interface. It is stateful because of the list of invocation.
+ * The state is cleaned after each run.
+ */
+public class BatchProxy extends PersistenceProxy implements Cloneable {
 	
     private JsonHandler jsonHandler;
     private ServiceHandler serviceHandler;
@@ -24,6 +28,14 @@ public class BatchProxy extends PersistenceProxy {
 
 	private Map<String, Method> returnMap;
 
+	/**
+	 * Constructor for ProxyFactory
+	 * @param serviceHandler
+	 * @param jsonHandler
+	 * @param serviceMap
+	 * @param batchServiceUrl
+	 * @param returnType
+	 */
     public BatchProxy(ServiceHandler serviceHandler, JsonHandler jsonHandler, 
     			Map<String, ServiceMethod> serviceMap, String batchServiceUrl, Class<?> returnType) {
     	super(serviceHandler, serviceMap);
@@ -36,6 +48,36 @@ public class BatchProxy extends PersistenceProxy {
 		this.returnMap = createReturnMap(returnType, serviceMap);
     }
 
+	/**
+	 * Constructor for cloning batch proxy.
+	 * @param serviceHandler
+	 * @param jsonHandler
+	 * @param serviceMap
+	 * @param batchServiceUrl
+	 * @param returnType
+	 * @param returnMap
+	 */
+	public BatchProxy(ServiceHandler serviceHandler, JsonHandler jsonHandler,
+					  Map<String, ServiceMethod> serviceMap, String batchServiceUrl,
+					  Class<?> returnType, Map<String, Method> returnMap) {
+		super(serviceHandler, serviceMap);
+		this.serviceHandler = serviceHandler;
+		this.jsonHandler = jsonHandler;
+		this.serviceMap = serviceMap;
+		this.invocations = new ArrayList<>();
+		this.batchServiceUrl = batchServiceUrl;
+		this.returnType = returnType;
+		this.returnMap = returnMap;
+	}
+
+	/**
+	 * To clone a clean BatchProxy from this instance.
+	 * @return the cloned proxy instance
+	 */
+	public BatchProxy clone() {
+		return new BatchProxy(serviceHandler, jsonHandler, serviceMap, batchServiceUrl, returnType, returnMap);
+	}
+
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		// build in commands
@@ -44,7 +86,9 @@ public class BatchProxy extends PersistenceProxy {
 			return null;
 		}
 		if (Arrays.asList(RUN, GET, SAVE).contains(method.getName())) {
-			return run();
+			Object output = run();
+			this.invocations = new ArrayList<>(); // cleaning state
+			return output;
 		} 
 		
 		// add invocation
@@ -161,4 +205,5 @@ public class BatchProxy extends PersistenceProxy {
 			return null;
 		}
 	}
+
 }

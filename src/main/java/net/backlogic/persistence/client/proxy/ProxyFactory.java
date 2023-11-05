@@ -154,7 +154,15 @@ public class ProxyFactory {
 
         return proxy;
     }
-    
+
+    public <T> T cloneBatch(Class<T> batchType, Object proxy) {
+        BatchProxy batchProxy = (BatchProxy) Proxy.getInvocationHandler(proxy);
+        batchProxy = batchProxy.clone();
+        T clone = (T) Proxy.newProxyInstance (
+                batchType.getClassLoader(), new Class[]{batchType}, batchProxy
+        );
+        return clone;
+    }
     
     private Map<String, ServiceMethod> buildServiceMap(String interfaceUrl, Method[] methods, ServiceMethodFinder finder) {
     	return buildServiceMap(interfaceUrl, methods, finder, null);

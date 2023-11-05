@@ -2,6 +2,7 @@ package net.backlogic.persistence.client;
 
 import net.backlogic.persistence.client.auth.JwtProvider;
 import net.backlogic.persistence.client.handler.ServiceHandler;
+import net.backlogic.persistence.client.proxy.BatchProxy;
 import net.backlogic.persistence.client.proxy.ProxyFactory;
 
 import java.util.HashMap;
@@ -124,8 +125,15 @@ public class DataAccessClient {
 	 * @param <T>
 	 */
 	public <T> T getBatch(Class<T> batchType) {
-		// create proxy
-		T proxy = proxyFactory.createBatch(batchType);
+		// check cache
+		T proxy = (T) proxyCache.get(batchType);
+		// read through
+		if (proxy == null) {
+			proxy = proxyFactory.createBatch(batchType);
+			this.proxyCache.put(batchType, proxy);
+		}
+		// always return a clone. cached copy is a template.
+		proxy = proxyFactory.cloneBatch(batchType, proxy);
 		return proxy;
 	}
 
