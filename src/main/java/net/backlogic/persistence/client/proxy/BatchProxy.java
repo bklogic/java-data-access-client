@@ -69,7 +69,7 @@ public class BatchProxy extends PersistenceProxy {
 	 */
 	private Map<String, Method> createReturnMap(Class returnType, Map<String, ServiceMethod> serviceMap) {
 		// if return type is array
-		if (returnType.isArray()) {
+		if (returnType.isArray() || returnType == Void.class) {
 			return null;
 		}
 
@@ -151,6 +151,14 @@ public class BatchProxy extends PersistenceProxy {
 			}
 		}
 		// return
-		return (batchReturn != null) ? batchReturn : outputs;
+		if (returnType.isArray()) {
+			return outputs;
+		} else if (returnType == Void.class) {
+			return null;
+		} else if (batchReturn != null) {
+			return batchReturn;
+		} else {
+			return null;
+		}
 	}
 }
