@@ -20,8 +20,8 @@ To get started with this Java client, please read on.
 ```xml
 <dependency>
     <groupId>net.backlogic.persistence</groupId>
-    <artifactId>data-access-client</artifactId>
-    <version>0.0.6</version>
+    <artifactId>jdac</artifactId>
+    <version>0.1.0</version>
 </dependency>
 ``` 
 
