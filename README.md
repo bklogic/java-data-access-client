@@ -7,7 +7,7 @@ the remote data access service when the interface method is called.
 
 If you don't know what data access service is, please take a look at:  
 
-[Data Access Service Documentation](https://docs.backlogic.net/#/DataAccessService)  
+[Data Access Service Documentation](https://www.backlogic.net/docs/concepts)  
 
 It is a simple way to take care of complex relational database access problem.
 
